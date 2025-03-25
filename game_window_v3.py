@@ -99,7 +99,7 @@ class GameWindow:
 
     def load_other_images(self, folder):
         other_images = {}
-        image_list = ['win_outline', 'trash_icon_small']
+        image_list = ['win_outline', 'trash_icon_small', 'back_dark', 'back_light', 'back_light_temp']
         for image in image_list:
             image_path = os.path.join(folder, f'{image}.png')
             if os.path.exists(image_path):
@@ -110,6 +110,7 @@ class GameWindow:
 
     def handle_keydown(self, key):
         if key == pygame.K_SPACE:  # Draw card on SPACE key press
+            self.gamestate = True
             self.drawn_card = self.deck.draw_card()
             if self.drawn_card:
                 card_name = f'{self.drawn_card["suit"]}_{self.drawn_card["rank"]}'
@@ -179,6 +180,7 @@ class GameWindow:
                         self.player_total_points = 0  # Reset player points if necessary
                         self.new_points_calc = self.starting_points  # Reset round points if necessary
                         self.guessed_card_counts = {}
+                        self.gamestate = False
 
             # Fill the screen with grey color
             self.screen.fill(self.GREY)
@@ -188,8 +190,13 @@ class GameWindow:
                 self.draw_text(player_points_text, self.screen_width // 5, self.screen_height // 2, self.BLACK) 
 
             else:
-                
-                # Display whether the guess was correct
+                # Display card back
+                other_image = self.other_images.get("back_light_temp", None)
+                if other_image:
+                    image_rect = other_image.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
+                    self.screen.blit(other_image, image_rect)
+
+                # Set trash to open trash and display icon
                 self.draw_button("", self.screen_width - 150 , self.screen_height - 150, 100, 100, self.GREY, self.open_removed_cards_window)
                 other_image = self.other_images.get("trash_icon_small", None)
                 if other_image:
@@ -227,7 +234,7 @@ class GameWindow:
                 self.draw_text(guess_text_2, self.screen_width // 3, self.screen_height - 100, color)
 
                 # Display the drawn card image
-                if self.drawn_card:
+                if self.drawn_card and self.gamestate == True:
                     card_name = f'{self.drawn_card["suit"]}_{self.drawn_card["rank"]}'
                     if card_name in self.card_images:
                         card_image = self.card_images[card_name]
@@ -254,37 +261,6 @@ class GameWindow:
 
         pygame.quit()
         sys.exit()
-
-class RemovedCardsWindow:
-    def __init__(self, removed_cards):
-        pygame.init()
-        self.width, self.height = 400, 600
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        pygame.display.set_caption("Removed Cards")
-
-        self.font = pygame.font.SysFont(None, 40)
-        self.WHITE = (255, 255, 255)
-        self.GREY = (178, 190, 181)
-        self.BLACK = (0, 0, 0)
-        self.RED = (210, 43, 43)
-        self.BLUE = (76, 81, 247)
-        self.removed_cards = removed_cards
-
-    def draw_text(self, text, x, y, color):
-        text_surface = self.font.render(text, True, color)
-        self.screen.blit(text_surface, (x, y))
-
-    def draw_button(self, text, x, y, width, height, color):
-        mouse = pygame.mouse.get_pos()
-        click = pygame.mouse.get_pressed()
-        rect = pygame.Rect(x, y, width, height)
-
-        pygame.draw.rect(self.screen, color, rect)
-        self.draw_text(text, x + 10, y + 10, self.BLACK)
-
-        if rect.collidepoint(mouse) and click[0] == 1:
-            return True
-        return False
 
 class RemovedCardsWindow:
     def __init__(self, removed_cards, card_images):
@@ -364,7 +340,6 @@ class RemovedCardsWindow:
             pygame.display.flip()
 
         self.screen = pygame.display.set_mode((800, 600))  # Reset back to original game window size
-
 
 if __name__ == "__main__":
     game = GameWindow()
