@@ -1,6 +1,8 @@
 # Example file showing balls randomly falling from the top of the window
 import pygame
 import random
+import time
+import threading
 
 class GameWindow():
     def __init__(self):
@@ -29,20 +31,76 @@ class GameWindow():
         # Initialize font
         self.font = pygame.font.SysFont(None, 55)
         self.dt = 0
-        self.player_pos = pygame.Vector2(self.screen.get_width() / 2, self.screen.get_height() / 2)
 
-        # List to store balls
-        self.balls = []
-        self.ball_size = 20
+        self.reset_game()
 
+    def reset_game(self):
+        # Resets the game state
+        self.player_pos = pygame.Vector2(self.screen_width / 2, self.screen_height / 2)
+        self.balls_top = []
+        self.balls_bottom = []
+        self.balls_left = []
+        self.balls_right = []
         self.player_total_points = 0
+        self.gamestate = True
+        self.mode_switch = True
+        self.timer = ''
+        self.mode = 'easy'
+        self.ball_size = 20
+        self.player_ball_size = 20
+        self.player_speed = 400
+        self.interval = 0.02
+        self.point_multiplier = 0.05
+        
+    def easy_mode(self):
+        self.mode = 'easy'
+        self.ball_size = 20
+        self.player_ball_size = 20
+        self.player_speed = 400
+        self.interval = 0.02
+        self.point_multiplier = 0.05  
+        
+    def hard_mode(self):
+        self.mode = 'hard'
+        self.ball_size = 10
+        self.player_ball_size = 10
+        self.player_speed = 300
+        self.interval = 0.06
+        self.point_multiplier = 0.25
+
+    def countdown(self, t): 
+        while t: 
+            mins, secs = divmod(t, 60) 
+            self.timer = '{:01d}'.format(secs) 
+            time.sleep(1) 
+            t -= 1
+        self.timer = ''
+        self.mode_switch = True    
 
     # Method to spawn a new ball at a random horizontal position at the top
-    def spawn_ball(self):
+    def spawn_ball_top(self):
         x_pos = random.randint(0, self.screen_width)
         y_pos = 0
         speed = random.randint(100, 300)
-        self.balls.append({"pos": pygame.Vector2(x_pos, y_pos), "speed": speed})
+        self.balls_top.append({"pos": pygame.Vector2(x_pos, y_pos), "speed": speed})
+
+    def spawn_ball_bottom(self):
+        x_pos = random.randint(0, self.screen_width)
+        y_pos = self.screen_height
+        speed = random.randint(100, 300)
+        self.balls_bottom.append({"pos": pygame.Vector2(x_pos, y_pos), "speed": speed})
+
+    def spawn_ball_left(self):
+        x_pos = 0
+        y_pos = random.randint(0, self.screen_height)
+        speed = random.randint(100, 300)
+        self.balls_left.append({"pos": pygame.Vector2(x_pos, y_pos), "speed": speed})
+        
+    def spawn_ball_right(self):
+        x_pos = self.screen_width
+        y_pos = random.randint(0, self.screen_height)
+        speed = random.randint(100, 300)
+        self.balls_right.append({"pos": pygame.Vector2(x_pos, y_pos), "speed": speed})
 
     def draw_text(self, text, x, y, color):
         text_surface = self.font.render(text, True, color)
@@ -52,7 +110,6 @@ class GameWindow():
     def main(self):
         running = True
         clock = pygame.time.Clock()
-        gamestate = True
 
         while running:
             # Poll for events
@@ -62,48 +119,89 @@ class GameWindow():
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
                         print('Restarting...')
-                        self.balls = []
-                        self.player_total_points = 0  # Reset player points if necessary
-                        self.new_points_calc = self.player_total_points  # Reset round points if necessary
-                        self.gamestate = True
+                        self.reset_game()
+                    if self.mode_switch == True:
+                        if event.key == pygame.K_q and self.mode_switch == True and self.mode == 'easy' and self.gamestate == True:
+                            self.player_total_points += 300
+                            self.hard_mode()
+                            self.mode_switch = False
+                            t = 3
+                            countdown_thread = threading.Thread(target=self.countdown, args=(t,))
+                            countdown_thread.start()
+                        if event.key == pygame.K_e and self.mode_switch == True and self.mode == 'hard' and self.gamestate == True:
+                            self.player_total_points += 30
+                            self.easy_mode()
+                            self.mode_switch = False
+                            t = 3
+                            countdown_thread = threading.Thread(target=self.countdown, args=(t,))
+                            countdown_thread.start()
 
             # Fill the screen with a color to wipe away anything from last frame
             self.screen.fill(self.GREY)
 
-            for ball in self.balls:
-                if self.player_pos.distance_to(ball["pos"]) < self.ball_size * 2:
-                    gamestate = False
-                    self.balls = []
-
-            if gamestate == True:
+            if self.gamestate == True:
                 # Draw the player circle
-                pygame.draw.circle(self.screen, self.GOLD, self.player_pos, self.ball_size)
+                pygame.draw.circle(self.screen, self.GOLD, self.player_pos, self.player_ball_size)
+
+                # Cooldown timer for mode change
+                countdown = str(self.timer)
+                self.draw_text(countdown, self.screen_width // 10, self.screen_height // 10, self.PURPLE)
 
                 keys = pygame.key.get_pressed()
-                if keys[pygame.K_w] and self.player_pos.y > 0 + self.ball_size:
-                    self.player_pos.y -= 650 * self.dt
-                if keys[pygame.K_s] and self.player_pos.y < self.screen_height - self.ball_size:
-                    self.player_pos.y += 650 * self.dt
-                if keys[pygame.K_a] and self.player_pos.x > 0 + self.ball_size:
-                    self.player_pos.x -= 650 * self.dt
-                if keys[pygame.K_d] and self.player_pos.x < self.screen_width - self.ball_size:
-                    self.player_pos.x += 650 * self.dt
+                if keys[pygame.K_w] or keys[pygame.K_UP] and self.player_pos.y > 0 + self.player_ball_size:
+                    self.player_pos.y -= self.player_speed * self.dt
+                if keys[pygame.K_s] or keys[pygame.K_DOWN] and self.player_pos.y < self.screen_height - self.player_ball_size:
+                    self.player_pos.y += self.player_speed * self.dt
+                if keys[pygame.K_a] or keys[pygame.K_LEFT] and self.player_pos.x > 0 + self.player_ball_size:
+                    self.player_pos.x -= self.player_speed * self.dt
+                if keys[pygame.K_d] or keys[pygame.K_RIGHT] and self.player_pos.x < self.screen_width - self.player_ball_size:
+                    self.player_pos.x += self.player_speed * self.dt
 
                 # Spawn a new ball at random intervals
-                if random.random() < 0.02:  # Adjust the probability as needed
-                    self.spawn_ball()
+                if random.random() < self.interval:
+                    self.spawn_ball_top()
+                if random.random() < self.interval:
+                    self.spawn_ball_bottom()
+                if random.random() < self.interval:
+                    self.spawn_ball_left()                    
+                if random.random() < self.interval:
+                    self.spawn_ball_right()
 
                 # Update and draw balls
-                for ball in self.balls:
+                for ball in self.balls_top:
                     ball["pos"].y += ball["speed"] * self.dt
                     pygame.draw.circle(self.screen, self.RED, (int(ball["pos"].x), int(ball["pos"].y)), self.ball_size)
+                    
+                for ball in self.balls_bottom:
+                    ball["pos"].y -= ball["speed"] * self.dt
+                    pygame.draw.circle(self.screen, self.RED, (int(ball["pos"].x), int(ball["pos"].y)), self.ball_size)
+
+                for ball in self.balls_left:
+                    ball["pos"].x += ball["speed"] * self.dt
+                    pygame.draw.circle(self.screen, self.RED, (int(ball["pos"].x), int(ball["pos"].y)), self.ball_size)  
+                                        
+                for ball in self.balls_right:
+                    ball["pos"].x -= ball["speed"] * self.dt
+                    pygame.draw.circle(self.screen, self.RED, (int(ball["pos"].x), int(ball["pos"].y)), self.ball_size)                    
 
                 # Display points
                 player_points_text = f'{int(self.player_total_points)}'
                 self.draw_text(player_points_text, self.screen_width - 200, self.screen_height // 10, self.BLACK) 
 
                 # Remove balls that have fallen off the screen
-                self.balls = [ball for ball in self.balls if ball["pos"].y < self.screen_height + self.ball_size]
+                self.balls_top = [ball for ball in self.balls_top if ball["pos"].y < self.screen_height + self.ball_size]
+                self.balls_bottom = [ball for ball in self.balls_bottom if ball["pos"].y > -self.ball_size]
+                self.balls_left = [ball for ball in self.balls_left if ball["pos"].x < self.screen_width + self.ball_size]
+                self.balls_right = [ball for ball in self.balls_right if ball["pos"].x > -self.ball_size]
+                
+                # Lose if hit by ball
+                for ball in self.balls_top + self.balls_bottom + self.balls_left + self.balls_right:
+                    if self.player_pos.distance_to(ball["pos"]) < self.player_ball_size + self.ball_size:
+                        self.gamestate = False
+                        break
+
+                # Increment score
+                self.player_total_points += self.point_multiplier
 
             else:
                 player_points_text = f'FINAL SCORE: {int(self.player_total_points)}'
