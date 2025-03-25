@@ -6,6 +6,7 @@ import os
 class Deck:
     def __init__(self):
         self.cards = self.create_deck()
+        self.removed_cards = []
 
     def create_deck(self):
         suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
@@ -20,7 +21,9 @@ class Deck:
         if not self.cards:
             print('Deck is empty')
             return None
-        return self.cards.pop()
+        card = self.cards.pop()
+        self.removed_cards.append(card)  # Store removed card
+        return card
 
 class GameWindow:
     def __init__(self):
@@ -58,6 +61,7 @@ class GameWindow:
 
         # Load card images
         self.card_images = self.load_card_images('playing-cards-master')   
+        self.other_images = self.load_other_images('playing-cards-master')
 
         # Game lists
         self.starting_points = 1000000     
@@ -74,6 +78,8 @@ class GameWindow:
 
         # Enable key repeat
         pygame.key.set_repeat(200, 50)
+        
+        self.show_removed_cards = False
 
     def draw_text(self, text, x, y, color):
         text_surface = self.font.render(text, True, color)
@@ -90,6 +96,17 @@ class GameWindow:
                 else:
                     print(f'Warning: Image not found for {card_name}')
         return card_images
+
+    def load_other_images(self, folder):
+        other_images = {}
+        image_list = ['win_outline', 'trash_icon_small']
+        for image in image_list:
+            image_path = os.path.join(folder, f'{image}.png')
+            if os.path.exists(image_path):
+                other_images[image] = pygame.image.load(image_path)
+            else:
+                print(f'Warning: Image not found for {image}')  # Fix: More descriptive warning
+        return other_images  # Fix: Move return outside the loop
 
     def handle_keydown(self, key):
         if key == pygame.K_SPACE:  # Draw card on SPACE key press
@@ -129,6 +146,21 @@ class GameWindow:
             self.selected_rank_index = (self.selected_rank_index + 1) % len(self.ranks)
             self.selected_suit_index = (self.selected_suit_index + 1) % len(self.suits)
 
+    def draw_button(self, text, x, y, width, height, color, action=None):
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        rect = pygame.Rect(x, y, width, height)
+
+        pygame.draw.rect(self.screen, color, rect)
+        self.draw_text(text, x + 10, y + 10, self.BLACK)
+
+        if rect.collidepoint(mouse) and click[0] == 1 and action:
+            action()
+
+    def open_removed_cards_window(self):
+        removed_window = RemovedCardsWindow(self.deck.removed_cards, self.card_images)
+        removed_window.run()
+
     # Main game loop
     def main(self):
         running = True
@@ -146,6 +178,7 @@ class GameWindow:
                         self.deck.shuffle()
                         self.player_total_points = 0  # Reset player points if necessary
                         self.new_points_calc = self.starting_points  # Reset round points if necessary
+                        self.guessed_card_counts = {}
 
             # Fill the screen with grey color
             self.screen.fill(self.GREY)
@@ -155,6 +188,14 @@ class GameWindow:
                 self.draw_text(player_points_text, self.screen_width // 5, self.screen_height // 2, self.BLACK) 
 
             else:
+                
+                # Display whether the guess was correct
+                self.draw_button("", self.screen_width - 150 , self.screen_height - 150, 100, 100, self.GREY, self.open_removed_cards_window)
+                other_image = self.other_images.get("trash_icon_small", None)
+                if other_image:
+                    image_rect = other_image.get_rect(center=(self.screen_width - 100, self.screen_height - 100))
+                    self.screen.blit(other_image, image_rect)
+                
                 # Display the total game points
                 player_points_text = f'{int(self.player_total_points)}'
                 self.draw_text(player_points_text, self.screen_width - 200, self.screen_height // 10, self.BLACK)           
@@ -195,9 +236,15 @@ class GameWindow:
 
                 # Display whether the guess was correct
                 if self.drawn_card:
+                    if self.is_guess_correct:
+                        other_image = self.other_images.get("win_outline", None)
+                        if other_image:
+                            image_rect = other_image.get_rect(center=(self.screen_width // 2, self.screen_height // 2))
+                            self.screen.blit(other_image, image_rect)
+
+                    # Fix: Always display result text (even if empty)
                     result_text = 'Correct!' if self.is_guess_correct else ''
-                    # self.draw_text(result_text, self.screen_width // 5, self.screen_height - 50, self.BLACK)
-                    self.draw_text(result_text, self.screen_width // 2, self.screen_height // 2, self.BLACK)
+                    self.draw_text(result_text, self.screen_width // 5, self.screen_height - 50, self.BLACK)
 
             # Update the display
             pygame.display.flip()
@@ -207,6 +254,117 @@ class GameWindow:
 
         pygame.quit()
         sys.exit()
+
+class RemovedCardsWindow:
+    def __init__(self, removed_cards):
+        pygame.init()
+        self.width, self.height = 400, 600
+        self.screen = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption("Removed Cards")
+
+        self.font = pygame.font.SysFont(None, 40)
+        self.WHITE = (255, 255, 255)
+        self.GREY = (178, 190, 181)
+        self.BLACK = (0, 0, 0)
+        self.RED = (210, 43, 43)
+        self.BLUE = (76, 81, 247)
+        self.removed_cards = removed_cards
+
+    def draw_text(self, text, x, y, color):
+        text_surface = self.font.render(text, True, color)
+        self.screen.blit(text_surface, (x, y))
+
+    def draw_button(self, text, x, y, width, height, color):
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        rect = pygame.Rect(x, y, width, height)
+
+        pygame.draw.rect(self.screen, color, rect)
+        self.draw_text(text, x + 10, y + 10, self.BLACK)
+
+        if rect.collidepoint(mouse) and click[0] == 1:
+            return True
+        return False
+
+class RemovedCardsWindow:
+    def __init__(self, removed_cards, card_images):
+        pygame.init()
+        self.width, self.height = 800, 600
+        self.screen = pygame.display.set_mode((self.width, self.height))
+        pygame.display.set_caption("Removed Cards")
+
+        self.font = pygame.font.SysFont(None, 40)
+        self.WHITE = (255, 255, 255)
+        self.GREY = (178, 190, 181)
+        self.BLACK = (0, 0, 0)
+        self.RED = (210, 43, 43)
+        self.BLUE = (76, 81, 247)
+        self.removed_cards = removed_cards
+        self.card_images = card_images  # Pass card images to this class
+
+    def draw_button(self, text, x, y, width, height, color):
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        rect = pygame.Rect(x, y, width, height)
+
+        pygame.draw.rect(self.screen, color, rect)
+        self.draw_text(text, x + 10, y + 10, self.BLACK)
+
+        if rect.collidepoint(mouse) and click[0] == 1:
+            return True
+        return False
+
+    def draw_text(self, text, x, y, color):
+        text_surface = self.font.render(text, True, color)
+        self.screen.blit(text_surface, (x, y))
+
+    def run(self):
+        running = True
+        card_width, card_height = 63, 99  # Set the desired size for the card images
+
+
+        while running:
+            self.screen.fill(self.GREY)
+
+            # Display removed card images with resized dimensions
+            max_cards_per_column = 5  # Number of cards to show per column
+            x_offset = 40  # Horizontal offset for each column
+            y_offset = 50   # Initial vertical offset for the first column
+            column_count = 0  # Keeps track of how many columns we've used
+            card_counter = 0  # Track number of cards in the current column
+            for card in self.removed_cards[-52:]:  # Show last 52 removed cards
+                card_name = f"{card['suit']}_{card['rank']}"
+                if card_name in self.card_images:
+                    card_image = self.card_images[card_name]
+                    # Resize the image
+                    resized_image = pygame.transform.scale(card_image, (card_width, card_height))
+                    
+                    # Position the image (new column after 5 cards)
+                    image_rect = resized_image.get_rect(center=(x_offset, y_offset))
+                    self.screen.blit(resized_image, image_rect)
+                    
+                    y_offset += 100  # Adjust space between images (increase to fit resized cards)
+                    card_counter += 1
+                    
+                    # After 5 cards, move to the next column
+                    if card_counter == max_cards_per_column:
+                        column_count += 1
+                        y_offset = 50  # Reset y_offset for the next column
+                        x_offset += 72  # Move to the next column (horizontal space)
+                        card_counter = 0  # Reset card counter for the new column
+
+            # "Back to Game" button
+            if self.draw_button("Back to Game", self.width // 3 + 50, self.height - 70, 200, 50, self.BLUE):
+                running = False
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+            pygame.display.flip()
+
+        self.screen = pygame.display.set_mode((800, 600))  # Reset back to original game window size
+
 
 if __name__ == "__main__":
     game = GameWindow()
