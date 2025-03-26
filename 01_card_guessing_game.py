@@ -113,6 +113,7 @@ class GameWindow:
             self.gamestate = True
             self.drawn_card = self.deck.draw_card()
             if self.drawn_card:
+                self.points_added = False
                 card_name = f'{self.drawn_card["suit"]}_{self.drawn_card["rank"]}'
                 guess = f'{self.suits[self.selected_suit_index]}_{self.ranks[self.selected_rank_index]}'
                 
@@ -131,13 +132,17 @@ class GameWindow:
                         self.guessed_card_counts[guess] += 1
                         self.is_guess_correct = False
                         self.new_points_calc *= 0.85
-        elif key == pygame.K_DOWN:
+        elif key == pygame.K_DOWN or key == pygame.K_s:
+            self.points_added = True
             self.selected_suit_index = (self.selected_suit_index + 1) % len(self.suits)
-        elif key == pygame.K_UP:
+        elif key == pygame.K_UP or key == pygame.K_w:
+            self.points_added = True
             self.selected_suit_index = (self.selected_suit_index - 1) % len(self.suits)
-        elif key == pygame.K_RIGHT:
+        elif key == pygame.K_RIGHT or key == pygame.K_d:
+            self.points_added = True
             self.selected_rank_index = (self.selected_rank_index + 1) % len(self.ranks)
-        elif key == pygame.K_LEFT:
+        elif key == pygame.K_LEFT or key == pygame.K_a:
+            self.points_added = True
             self.selected_rank_index = (self.selected_rank_index - 1) % len(self.ranks)
 
         # Skip the guess if it has been guessed 3 times already
@@ -243,6 +248,14 @@ class GameWindow:
 
                 # Display whether the guess was correct
                 if self.drawn_card:
+                    if self.suits[self.selected_suit_index] == self.drawn_card["suit"] and self.points_added == False:
+                        print('You got the suit!')
+                        self.player_total_points += 100
+                        self.points_added = True
+                    if self.ranks[self.selected_rank_index] == self.drawn_card["rank"] and self.points_added == False:
+                        print('You got the rank!')
+                        self.player_total_points += 500
+                        self.points_added = True
                     if self.is_guess_correct:
                         other_image = self.other_images.get("win_outline", None)
                         if other_image:

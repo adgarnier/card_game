@@ -41,13 +41,16 @@ class GameWindow():
         self.balls_bottom = []
         self.balls_left = []
         self.balls_right = []
+        self.bomb = []
         self.player_total_points = 0
         self.gamestate = True
         self.mode_switch = True
         self.timer = ''
+        self.points = ''
         self.mode = 'easy'
         self.ball_size = 20
         self.player_ball_size = 20
+        self.bomb_size = 20
         self.player_speed = 400
         self.interval = 0.02
         self.point_multiplier = 0.05
@@ -56,6 +59,7 @@ class GameWindow():
         self.mode = 'easy'
         self.ball_size = 20
         self.player_ball_size = 20
+        self.bomb_size = 20
         self.player_speed = 400
         self.interval = 0.02
         self.point_multiplier = 0.05  
@@ -64,9 +68,10 @@ class GameWindow():
         self.mode = 'hard'
         self.ball_size = 10
         self.player_ball_size = 10
+        self.bomb_size = 10
         self.player_speed = 300
         self.interval = 0.06
-        self.point_multiplier = 0.25
+        self.point_multiplier = 0.5
 
     def countdown(self, t): 
         while t: 
@@ -76,6 +81,14 @@ class GameWindow():
             t -= 1
         self.timer = ''
         self.mode_switch = True    
+
+    def bonus_points_thread(self, t):
+        while t:
+            mins, secs = divmod(t, 60) 
+            self.points = '{:01d}'.format(secs) 
+            time.sleep(1) 
+            t -= 1
+        self.points = ''      
 
     # Method to spawn a new ball at a random horizontal position at the top
     def spawn_ball_top(self):
@@ -102,6 +115,13 @@ class GameWindow():
         speed = random.randint(100, 300)
         self.balls_right.append({"pos": pygame.Vector2(x_pos, y_pos), "speed": speed})
 
+    def spawn_bomb(self):
+        self.bomb = []
+        x_pos = random.randint(0, self.screen_width)
+        y_pos = random.randint(0, self.screen_height)
+        speed = 0
+        self.bomb.append({"pos": pygame.Vector2(x_pos, y_pos), "speed": speed})
+
     def draw_text(self, text, x, y, color):
         text_surface = self.font.render(text, True, color)
         self.screen.blit(text_surface, (x, y))
@@ -122,19 +142,25 @@ class GameWindow():
                         self.reset_game()
                     if self.mode_switch == True:
                         if event.key == pygame.K_q and self.mode_switch == True and self.mode == 'easy' and self.gamestate == True:
-                            self.player_total_points += 300
+                            self.p = 1000
+                            self.player_total_points += self.p
                             self.hard_mode()
                             self.mode_switch = False
                             t = 3
                             countdown_thread = threading.Thread(target=self.countdown, args=(t,))
                             countdown_thread.start()
+                            point_thread = threading.Thread(target=self.bonus_points_thread, args=(t,))
+                            point_thread.start()
                         if event.key == pygame.K_e and self.mode_switch == True and self.mode == 'hard' and self.gamestate == True:
-                            self.player_total_points += 30
+                            self.p = 50
+                            self.player_total_points += 50
                             self.easy_mode()
                             self.mode_switch = False
                             t = 3
                             countdown_thread = threading.Thread(target=self.countdown, args=(t,))
                             countdown_thread.start()
+                            point_thread = threading.Thread(target=self.bonus_points_thread, args=(t,))
+                            point_thread.start()                            
 
             # Fill the screen with a color to wipe away anything from last frame
             self.screen.fill(self.GREY)
@@ -145,17 +171,21 @@ class GameWindow():
 
                 # Cooldown timer for mode change
                 countdown = str(self.timer)
-                self.draw_text(countdown, self.screen_width // 10, self.screen_height // 10, self.PURPLE)
+                self.draw_text(countdown, self.screen_width // 10, self.screen_height // 10, self.BLACK)
 
                 keys = pygame.key.get_pressed()
-                if keys[pygame.K_w] or keys[pygame.K_UP] and self.player_pos.y > 0 + self.player_ball_size:
+                if keys[pygame.K_w] or keys[pygame.K_UP]:
                     self.player_pos.y -= self.player_speed * self.dt
-                if keys[pygame.K_s] or keys[pygame.K_DOWN] and self.player_pos.y < self.screen_height - self.player_ball_size:
+                if keys[pygame.K_s] or keys[pygame.K_DOWN]:
                     self.player_pos.y += self.player_speed * self.dt
-                if keys[pygame.K_a] or keys[pygame.K_LEFT] and self.player_pos.x > 0 + self.player_ball_size:
+                if keys[pygame.K_a] or keys[pygame.K_LEFT]:
                     self.player_pos.x -= self.player_speed * self.dt
-                if keys[pygame.K_d] or keys[pygame.K_RIGHT] and self.player_pos.x < self.screen_width - self.player_ball_size:
+                if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
                     self.player_pos.x += self.player_speed * self.dt
+                
+                # Ensure the player doesn't go out of bounds
+                self.player_pos.x = max(self.player_ball_size, min(self.player_pos.x, self.screen_width - self.player_ball_size))
+                self.player_pos.y = max(self.player_ball_size, min(self.player_pos.y, self.screen_height - self.player_ball_size))
 
                 # Spawn a new ball at random intervals
                 if random.random() < self.interval:
@@ -166,6 +196,10 @@ class GameWindow():
                     self.spawn_ball_left()                    
                 if random.random() < self.interval:
                     self.spawn_ball_right()
+
+                # Spawn bomb
+                if random.random() < self.interval * 0.05:
+                    self.spawn_bomb()
 
                 # Update and draw balls
                 for ball in self.balls_top:
@@ -184,9 +218,19 @@ class GameWindow():
                     ball["pos"].x -= ball["speed"] * self.dt
                     pygame.draw.circle(self.screen, self.RED, (int(ball["pos"].x), int(ball["pos"].y)), self.ball_size)                    
 
+                # Update and draw bomb
+                for bomb in self.bomb:
+                    bomb["pos"].y += bomb["speed"] * self.dt
+                    pygame.draw.circle(self.screen, self.BLACK, (int(bomb["pos"].x), int(bomb["pos"].y)), self.bomb_size)                
+
                 # Display points
                 player_points_text = f'{int(self.player_total_points)}'
                 self.draw_text(player_points_text, self.screen_width - 200, self.screen_height // 10, self.BLACK) 
+
+                # Bonus points pop-up
+                if self.points == '3':
+                    bonus_points = '+ ' + str(self.p)
+                    self.draw_text(bonus_points, self.screen_width - 200, self.screen_height // 6, self.PURPLE)
 
                 # Remove balls that have fallen off the screen
                 self.balls_top = [ball for ball in self.balls_top if ball["pos"].y < self.screen_height + self.ball_size]
@@ -198,6 +242,21 @@ class GameWindow():
                 for ball in self.balls_top + self.balls_bottom + self.balls_left + self.balls_right:
                     if self.player_pos.distance_to(ball["pos"]) < self.player_ball_size + self.ball_size:
                         self.gamestate = False
+                        break
+
+                # Destory balls with bomb
+                for bomb in self.bomb:
+                    if self.player_pos.distance_to(bomb["pos"]) < self.player_ball_size + self.bomb_size:
+                        self.p = 500
+                        self.balls_top = []
+                        self.balls_bottom = []
+                        self.balls_left = []
+                        self.balls_right = []
+                        self.bomb = []
+                        self.bomb = []
+                        self.player_total_points += self.p
+                        point_thread = threading.Thread(target=self.bonus_points_thread, args=(t,))
+                        point_thread.start()
                         break
 
                 # Increment score
