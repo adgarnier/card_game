@@ -63,7 +63,11 @@ class GameWindow():
 
     def load_beer_images(self, folder):
         beer_images = {}
-        image_list = ['budweiser', 'budlight', 'busch', 'coorslight', 'corona', 'heineken', 'millerlite', 'moosehead']
+        image_list = [
+            'alexanderkeiths', 'becks', 'budweiser', 'budlight', 'busch', 'chambly', 'coorslight', 
+            'corona', 'heineken', 'hofbrau', 'iceberg', 'labattblue', 'millerlite', 'modelo', 'moosehead', 
+            'tsingtao'
+            ]
         for image in image_list:
             image_path = os.path.join(folder, f'{image}.png')
             if os.path.exists(image_path):
@@ -235,7 +239,7 @@ class GameWindow():
                     draw_beer_button(600 - 100 * i, self.selected_beer_images[i], i) 
 
             # end screens
-            elif self.player_total_points > 25:
+            elif self.player_total_points > 50:
                 self.screen.fill(self.GREY)
                 player_points_text = f'BEER SCORE: '
                 player_points_number = f'{int(self.player_total_points)}'
@@ -246,7 +250,7 @@ class GameWindow():
                 pygame.draw.rect(self.screen, self.RED, [self.screen_width // 5 - 20, self.screen_height // 2 + 15, 300, 5])
                 self.draw_text(player_points_text_2, self.screen_width // 5, self.screen_height // 3, self.BLACK)
                 
-            elif self.player_total_points > 10:
+            elif self.player_total_points > 20:
                 self.screen.fill(self.GREY)
                 player_points_text = f'BEER SCORE: '
                 player_points_number = f'{int(self.player_total_points)}'
