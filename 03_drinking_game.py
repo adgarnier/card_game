@@ -64,9 +64,9 @@ class GameWindow():
     def load_beer_images(self, folder):
         beer_images = {}
         image_list = [
-            'alexanderkeiths', 'becks', 'budweiser', 'budlight', 'busch', 'chambly', 'coorslight', 
-            'corona', 'heineken', 'hofbrau', 'iceberg', 'labattblue', 'millerlite', 'modelo', 'moosehead', 
-            'tsingtao'
+            'alexanderkeiths', 'becks', 'budweiser', 'budlight', 'busch', 'carlsberg', 'chambly', 'coorslight', 
+            'corona', 'heineken', 'hoegaarden', 'hofbrau', 'iceberg', 'labattblue', 'michelobultra', 'millerlite', 
+            'modelo', 'molsoncanadian', 'moosehead', 'sapporo', 'stellaartois', 'tsingtao'
             ]
         for image in image_list:
             image_path = os.path.join(folder, f'{image}.png')
