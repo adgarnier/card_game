@@ -288,7 +288,14 @@ class RemovedCardsWindow:
         self.BLACK = (0, 0, 0)
         self.RED = (210, 43, 43)
         self.BLUE = (76, 81, 247)
-        self.removed_cards = removed_cards
+        
+        # Define rank order
+        rank_order = {'2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, 
+                    '10': 10, 'Jack': 11, 'Queen': 12, 'King': 13, 'Ace': 14}
+        # Sort the list based on rank
+        sorted_cards = sorted(removed_cards, key=lambda card: rank_order[card['rank']])
+        
+        self.removed_cards = sorted_cards
         self.card_images = card_images  # Pass card images to this class
 
     def draw_button(self, text, x, y, width, height, color):
