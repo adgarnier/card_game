@@ -21,31 +21,50 @@ class GameWindow():
         
         self.font = pygame.font.SysFont(None, 55)
         self.dt = 0
-        self.bird_size = random.randint(40, 80)  # Adjusted for bird images
         self.bird_images = self.load_bird_images()
         self.reset_game()
 
     def load_bird_images(self):
         image_list = [
-            'becks', 'budlight', 'busch'
+            'Albatross', 'Crow', 'Duck', 'Eagle', 'Falcon', 'Flamingo', 'Goose', 'Heron', 'Hummingbird', 'Owl', 'Pidgeon'
         ]
         images = {}
         for bird in image_list:
             path = os.path.join("birds", f"{bird}.png")
             try:
                 image = pygame.image.load(path)
-                aspect_ratio = image.get_height() / image.get_width()
-                new_width = self.bird_size
-                new_height = int(new_width * aspect_ratio)
-                images[bird] = pygame.transform.scale(image, (new_width, new_height))
+                images[bird] = image 
             except pygame.error as e:
                 print(f"Error loading {bird}.png: {e}")
                 images[bird] = None  # Placeholder for missing images
         return images
 
+    def draw_hitbox(self, bird):
+        # for lower bird
+        if bird["image"]:
+            # Define top or bottom birds
+            upper_birds = ['Albatross', 'Flamingo', 'Heron', 'Hummingbird', 'Owl']
+            if bird["bird_type"] in upper_birds:
+                print(bird["bird_type"])
+                top_or_bottom = bird["size"] // 2
+            elif bird["bird_type"] == 'Falcon':
+                top_or_bottom = bird["size"] // 3
+            else:
+                top_or_bottom = 0
+            bird_rect = pygame.Rect(
+                int(bird["pos"].x) - bird["size"] // 2, 
+                int(bird["pos"].y) - top_or_bottom, 
+                bird["size"], 
+                bird["size"] // 2
+            )
+            pygame.draw.rect(self.screen, self.colors["RED"], bird_rect, 2)  # Red rectangle around birds
+
     def next_round(self):
-        self.interval = self.interval * 2
-        self.point_multiplier = self.point_multiplier * 2
+        self.wave_height = self.wave_height * 1.1
+        self.spawn_rate = self.spawn_rate * 1.1
+        self.speed = self.speed * 1.1
+        self.interval = self.interval * 1.1
+        self.point_multiplier = self.point_multiplier * 1.1
         # Generate a new sequence of three target birds (can repeat)
         self.target_sequence = [random.choice(list(self.bird_images.keys())) for _ in range(1)]
         self.current_target_index = 0  # Track progress through the sequence
@@ -55,7 +74,10 @@ class GameWindow():
         self.explosions = []
         self.player_total_points = 0
         self.gamestate = True
-        self.interval = 0.02
+        self.wave_height = 1
+        self.spawn_rate = 1
+        self.speed = 1
+        self.interval = 0.005
         self.point_multiplier = 1
         
         # Generate a new sequence of three target birds (can repeat)
@@ -66,9 +88,20 @@ class GameWindow():
         bird_type = random.choice(list(self.bird_images.keys()))
         x_pos = 0 if direction == "left" else self.screen_width
         y_pos = random.randint(50, self.screen_height - 200)
-        speed_x = random.randint(100, 300) * (1 if direction == "left" else -1)
-        wave_amplitude = random.randint(5, 250)
+        speed_x = random.randint(100, 300) * (1 if direction == "left" else -1) * self.speed
+        wave_amplitude = random.randint(5, 100) * self.wave_height
         wave_frequency = 2
+        size = random.randint(50, 150)  # Random size per bird spawn
+        
+        if self.bird_images[bird_type]:
+            original_image = self.bird_images[bird_type]
+            aspect_ratio = original_image.get_height() / original_image.get_width()
+            new_width = size
+            new_height = int(new_width * aspect_ratio)
+            resized_image = pygame.transform.scale(original_image, (new_width, new_height))
+        else:
+            resized_image = None
+        
         self.birds.append({
             "pos": pygame.Vector2(x_pos, y_pos),
             "speed_x": speed_x,
@@ -77,7 +110,9 @@ class GameWindow():
             "start_y": y_pos,
             "time_offset": random.uniform(0, math.pi * 2),
             "direction": direction,
-            "bird_type": bird_type
+            "bird_type": bird_type,
+            "image": resized_image,
+            "size": size
         })
 
     def explode_bird(self, bird):
@@ -100,15 +135,15 @@ class GameWindow():
         """Display the target sequence at the top of the screen."""
         x_offset = 50
         for i, bird in enumerate(self.target_sequence):
-            color = self.colors["GREEN"] if i < self.current_target_index else self.colors["RED"]
+            color = self.colors["GREEN"] if i < self.current_target_index else self.colors["WHITE"]
             self.draw_text(bird, x_offset, self.screen_height - 50, color)
             x_offset += 200
 
     def draw_crosshair(self, mouse_x, mouse_y):
         # Draw horizontal line
-        pygame.draw.line(self.screen, self.colors["WHITE"], (mouse_x - 15, mouse_y), (mouse_x + 15, mouse_y), 2)
+        pygame.draw.line(self.screen, self.colors["RED"], (mouse_x - 15, mouse_y), (mouse_x + 15, mouse_y), 2)
         # Draw vertical line
-        pygame.draw.line(self.screen, self.colors["WHITE"], (mouse_x, mouse_y - 15), (mouse_x, mouse_y + 15), 2)
+        pygame.draw.line(self.screen, self.colors["RED"], (mouse_x, mouse_y - 15), (mouse_x, mouse_y + 15), 2)
 
     def main(self):
         running = True
@@ -125,7 +160,24 @@ class GameWindow():
                 elif event.type == pygame.MOUSEBUTTONDOWN and self.gamestate:
                     x, y = pygame.mouse.get_pos()
                     for bird in self.birds[:]:
-                        if bird["pos"].distance_to((x, y)) < self.bird_size:
+                        # Create the hitbox using the same logic as `draw_hitbox`
+                        upper_birds = ['Albatross', 'Flamingo', 'Heron', 'Hummingbird', 'Owl']
+                        if bird["bird_type"] in upper_birds:
+                            top_or_bottom = bird["size"] // 2
+                        elif bird["bird_type"] == 'Falcon':
+                            top_or_bottom = bird["size"] // 3
+                        else:
+                            top_or_bottom = 0
+
+                        bird_rect = pygame.Rect(
+                            int(bird["pos"].x) - bird["size"] // 2, 
+                            int(bird["pos"].y) - top_or_bottom, 
+                            bird["size"], 
+                            bird["size"] // 2
+                        )
+
+                        # Check if mouse click is inside the hitbox
+                        if bird_rect.collidepoint(x, y):
                             self.explode_bird(bird)
 
             if self.gamestate:
@@ -137,11 +189,15 @@ class GameWindow():
                 time_elapsed += self.dt
                 for bird in self.birds:
                     bird["pos"].x += bird["speed_x"] * self.dt
-                    bird["pos"].y = bird["start_y"] + bird["wave_amplitude"] * math.sin(time_elapsed * bird["wave_frequency"] + bird["time_offset"])
-                    bird_image = self.bird_images[bird["bird_type"]]
-                    self.screen.blit(bird_image, (int(bird["pos"].x) - self.bird_size // 2, int(bird["pos"].y) - self.bird_size // 2))
+                    bird["pos"].y = bird["start_y"] + bird["wave_amplitude"] * math.sin(pygame.time.get_ticks() * 0.002 * bird["wave_frequency"] + bird["time_offset"])
+                    
+                    if bird["image"]:
+                        image = pygame.transform.flip(bird["image"], bird["direction"] == "right", False)
+                        self.screen.blit(image, (int(bird["pos"].x) - bird["size"] // 2, int(bird["pos"].y) - bird["size"] // 2))
+                        self.draw_hitbox(bird)
                 
-                self.birds = [b for b in self.birds if 0 <= b["pos"].x <= self.screen_width]
+                self.birds = [b for b in self.birds if -50 <= b["pos"].x <= self.screen_width + 50]
+            
                 self.draw_text(f'{int(self.player_total_points)}', self.screen_width - 200, self.screen_height // 10, self.colors["BLACK"])
                 self.draw_sequence()  # Draw the sequence at the top
 
@@ -162,7 +218,7 @@ class GameWindow():
                 if explosion["radius"] >= explosion["max_radius"]:
                     self.explosions.remove(explosion)
                 else:
-                    pygame.draw.circle(self.screen, self.colors["WHITE"], (int(explosion["pos"].x), int(explosion["pos"].y)), explosion["radius"], 2)
+                    pygame.draw.circle(self.screen, self.colors["RED"], (int(explosion["pos"].x), int(explosion["pos"].y)), explosion["radius"], 3)
 
             pygame.display.flip()
             self.dt = clock.tick(60) / 1000
