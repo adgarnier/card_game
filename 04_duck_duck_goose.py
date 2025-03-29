@@ -45,7 +45,6 @@ class GameWindow():
             # Define top or bottom birds
             upper_birds = ['Albatross', 'Flamingo', 'Heron', 'Hummingbird', 'Owl']
             if bird["bird_type"] in upper_birds:
-                print(bird["bird_type"])
                 top_or_bottom = bird["size"] // 2
             elif bird["bird_type"] == 'Falcon':
                 top_or_bottom = bird["size"] // 3
@@ -149,6 +148,8 @@ class GameWindow():
         running = True
         clock = pygame.time.Clock()
         time_elapsed = 0
+        
+        pygame.mouse.set_visible(False)
 
         while running:
             self.screen.fill(self.colors["GREY"])
@@ -181,6 +182,10 @@ class GameWindow():
                             self.explode_bird(bird)
 
             if self.gamestate:
+                
+                if len(self.birds) == 0:
+                    self.spawn_bird(random.choice(["left", "right"]))
+                
                 if random.random() < self.interval:
                     self.spawn_bird("left")
                 if random.random() < self.interval:
