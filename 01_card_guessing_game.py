@@ -318,7 +318,6 @@ class RemovedCardsWindow:
         running = True
         card_width, card_height = 63, 99  # Set the desired size for the card images
 
-
         while running:
             self.screen.fill(self.GREY)
 

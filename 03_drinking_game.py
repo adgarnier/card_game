@@ -36,7 +36,7 @@ class GameWindow():
         
         # Initialize selected hat
         self.selected_hat = None  # This will store the hat selected for the game
-
+        self.speed_max = 1400
         self.mouse_held_down = False  # Track if the mouse button is held down
 
         self.reset_game()
@@ -134,7 +134,7 @@ class GameWindow():
                 self.screen.blit(drink_image, drink_rect)
                 pygame.display.flip()
                 # Drink for ~1 second
-                drink_time = random.randint(500, 1400)
+                drink_time = random.randint(500, self.speed_max)
                 pygame.time.delay(drink_time) 
                 self.background()
                 self.screen.blit(beer_image, image_rect_table)
@@ -168,6 +168,8 @@ class GameWindow():
         self.player_total_points += 1
         if self.user_sequence == self.sequence[:len(self.user_sequence)]:
             if len(self.user_sequence) == len(self.sequence):
+                if self.speed_max > 425:
+                    self.speed_max = round(self.speed_max * 0.95)
                 self.user_sequence = []
                 self.generate_sequence()
         else:
