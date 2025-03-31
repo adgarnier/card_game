@@ -80,9 +80,12 @@ class GameWindow():
             pygame.draw.rect(self.screen, self.colors["RED"], bird_rect, 2)  # Red rectangle around birds
 
     def next_round(self):
+        print('hello')
         if self.wave_height < 300:
             self.wave_height = self.wave_height + 30
-        self.speed = self.speed * 1.10
+        if self.speed < 10:
+            self.speed = self.speed * 1.10
+        print(self.speed)
         self.interval = self.interval * 1.1
         # Generate a new sequence of three target birds (can repeat)
         self.target_sequence = [random.choice(list(self.bird_images.keys())) for _ in range(3)]
