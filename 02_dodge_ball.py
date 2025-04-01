@@ -255,6 +255,7 @@ class GameWindow():
                         self.bomb = []
                         self.bomb = []
                         self.player_total_points += self.p
+                        t=3
                         point_thread = threading.Thread(target=self.bonus_points_thread, args=(t,))
                         point_thread.start()
                         break
