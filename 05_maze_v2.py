@@ -35,7 +35,7 @@ class GameWindow():
 
     def maze_setup(self):
         # Maze setup
-        self.width, self.height = 3, 3  # Maze size (6x6)
+        self.width, self.height = 5, 5  # Maze size (6x6)
         self.cell_size = 60  # Each cell (room) will be 60x60 pixels
         self.base_maze = self.create_maze(self.width, self.height)
         self.mazes = [
@@ -157,9 +157,8 @@ class GameWindow():
         player_y_pos = player_pos[1] * self.cell_size + self.cell_size // 2
         pygame.draw.circle(self.screen, self.colors["RED"], (player_x_pos, player_y_pos), 10)
 
-    def reset_game(self):
+    def next_game(self):
         self.total_position = 0
-        self.player_total_points = 0
         self.current_maze_index = 0
         self.gamestate = True
         self.top_wall = False
@@ -168,7 +167,11 @@ class GameWindow():
         self.left_wall = False
         self.start = False
         self.end = False
-        self.maze_setup()
+        self.maze_setup()        
+
+    def reset_game(self):
+        self.player_total_points = 0
+        self.next_game()
     
     def draw_text(self, text, x, y, color):
         text_surface = self.font.render(text, True, color)
@@ -176,7 +179,7 @@ class GameWindow():
     
     def load_images(self):
         all_images = [
-            'start', 'left', 'left_right', 'left_straight', 'left_straight_right', 'none', 'right', 'straight', 'straight_right', 'end'
+            'new_start', 'new_left', 'new_left_right', 'new_left_straight', 'new_left_straight_right', 'new_none_dark', 'new_right', 'new_straight_long', 'new_straight_right', 'new_end'
         ]
         images = {}
         for wall in all_images:
@@ -184,11 +187,10 @@ class GameWindow():
             try:
                 image = pygame.image.load(path)
                 image = pygame.transform.scale(image, (800, 600))
-                print(image)
-                if wall == 'start':
-                    image = pygame.transform.scale(image, (200, 200))
-                if wall == 'end':
-                    image = pygame.transform.scale(image, (200, 200))
+                if wall == 'new_start':
+                    image = pygame.transform.scale(image, (150, 80))
+                if wall == 'new_end':
+                    image = pygame.transform.scale(image, (150, 80))
                 images[wall] = image 
                 
             except pygame.error as e:
@@ -198,43 +200,54 @@ class GameWindow():
     
     def draw_wall_images(self):
         wall_position = (0, 0)
-        
         # Determine the image key based on the wall conditions
         if self.top_wall and self.right_wall and self.left_wall:
-            image_key = "none"
+            image_key = "new_none_dark"
         elif self.top_wall and self.left_wall:
-            image_key = "left"
+            image_key = "new_left"
         elif self.top_wall and self.right_wall:
-            image_key = "right"
+            image_key = "new_right"
         elif self.top_wall:
-            image_key = "left_right"
+            image_key = "new_left_right"
         elif self.left_wall and self.right_wall:
-            image_key = "straight"
+            image_key = "new_straight_long"
         elif self.left_wall:
-            image_key = "left_straight"
+            image_key = "new_left_straight"
         elif self.right_wall:
-            image_key = "straight_right"
+            image_key = "new_straight_right"
         else:
-            image_key = "left_straight_right"
+            image_key = "new_left_straight_right"
 
         # Check if the image exists in the images dictionary and blit it to the screen
         if image_key in self.images and self.images[image_key]:
             self.screen.blit(self.images[image_key], wall_position)
 
         # Draw the start image at a different position if self.start is True
+        # Draw the start image at a different position if self.start is True
         if self.start:
-            start_position = (300, 300)  # You can set this to any position you want
-            start_key = "start"
+            start_key = "new_start"
+            start_position = (320, 480)  # Default position
+
             if start_key in self.images and self.images[start_key]:
-                self.screen.blit(self.images[start_key], start_position)  
+                start_image = self.images[start_key]
+
+                # Rotate the image based on maze index
+                if self.current_maze_index == 2:
+                    start_image = pygame.transform.rotate(start_image, 180)
+                if self.current_maze_index == 1:
+                    start_image = pygame.transform.rotate(start_image, 90)
+                    start_position = (360, 440)  # Default position
+                if self.current_maze_index == 3:
+                    start_image = pygame.transform.rotate(start_image, 270)
+                    start_position = (360, 440)  # Default position
+                self.screen.blit(start_image, start_position)
 
         # Draw the start image at a different position if self.start is True
         if self.end:
-            end_position = (300, 300)  # You can set this to any position you want
-            end_key = "end"
+            end_position = (320, 480)  # You can set this to any position you want
+            end_key = "new_end"
             if end_key in self.images and self.images[end_key]:
                 self.screen.blit(self.images[end_key], end_position)  
-
     
     def toggle_minimap(self):
         self.minimap = not self.minimap
@@ -253,6 +266,9 @@ class GameWindow():
                     self.reset_game()
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_m:
                     self.toggle_minimap()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and self.player_positions[self.current_maze_index] == self.end_positions[self.current_maze_index]:
+                    self.player_total_points += 1
+                    self.next_game()
                 elif event.type == pygame.KEYDOWN:
                     self.start = False
                     self.end = False
@@ -263,8 +279,6 @@ class GameWindow():
                     self.left_wall = False
                     if event.key == pygame.K_UP and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
                         self.total_position += 0
-                        print('arrow up')
-                        print(self.player_positions)
                         if self.current_maze_index == 0:
                             self.player_positions = [
                                 (self.player_positions[0][0], self.player_positions[0][1] - 1),
@@ -295,13 +309,9 @@ class GameWindow():
                                 (self.player_positions[2][0] + 1, self.player_positions[2][1]),
                                 (self.player_positions[3][0], self.player_positions[3][1] + 1)
                                 ]
-                            
-                        print(self.player_positions)
-                        
+                                                    
                     elif event.key == pygame.K_DOWN and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['bottom']:
                         self.total_position += 2
-                        print('arrow down')
-                        print(self.player_positions)
                         if self.current_maze_index == 0:
                             self.player_positions = [
                                 (self.player_positions[0][0], self.player_positions[0][1] + 1),
@@ -330,14 +340,9 @@ class GameWindow():
                                 (self.player_positions[2][0] + 1, self.player_positions[2][1]),
                                 (self.player_positions[3][0], self.player_positions[3][1] + 1)
                                 ]
-                            
-                        print(self.player_positions)
-                        
-                        # self.player_positions[self.current_maze_index] = (self.player_positions[self.current_maze_index][0], self.player_positions[self.current_maze_index][1] + 1)
+                                                    
                     elif event.key == pygame.K_LEFT and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['left']:
                         self.total_position -= 1
-                        print('arrow left')
-                        print(self.player_positions)
                         # straight
                         if self.current_maze_index == 0:
                             self.player_positions = [
@@ -370,13 +375,9 @@ class GameWindow():
                                 (self.player_positions[2][0], self.player_positions[2][1] - 1),
                                 (self.player_positions[3][0] + 1, self.player_positions[3][1])
                                 ]
-                        print(self.player_positions)
                         
-                        # self.player_positions[self.current_maze_index] = (self.player_positions[self.current_maze_index][0] - 1, self.player_positions[self.current_maze_index][1])
                     elif event.key == pygame.K_RIGHT and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['right']:
                         self.total_position += 1
-                        print('arrow right')
-                        print(self.player_positions)
                         # straight
                         if self.current_maze_index == 0:
                             self.player_positions = [
@@ -409,40 +410,9 @@ class GameWindow():
                                 (self.player_positions[2][0], self.player_positions[2][1] + 1),
                                 (self.player_positions[3][0] - 1, self.player_positions[3][1])
                                 ]
-                        print(self.player_positions)
-                        
-                        # self.player_positions[self.current_maze_index] = (self.player_positions[self.current_maze_index][0] + 1, self.player_positions[self.current_maze_index][1])
-                    # print(f'Current position: {self.player_positions[self.current_maze_index]}')
-
-                    # if self.total_position % 4 == 0 or self.total_position == 0:
-                    #     self.current_maze_index = 0
-                    # elif self.total_position % 2 == 0:
-                    #     self.current_maze_index = 2
-                    # elif self.total_position % 4 == 3 or self.total_position == -1:
-                    #     self.current_maze_index = 1
-                    # elif self.total_position % 4 == 1 or self.total_position == 1:
-                    #     self.current_maze_index = 3
-
-                    # print(f"Total position: {self.total_position}")
-                    # print(f"Current maze: {self.maze_orientations[self.current_maze_index]}/{self.current_maze_index}\n")
-
-                    # if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
-                    #     print('top wall')
-                    #     self.top_wall = True
-                    # if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['bottom']:
-                    #     print('bottom wall')
-                    #     self.bottom_wall = True
-                    # if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['right']:
-                    #     print('left wall')
-                    #     self.left_wall = True
-                    # if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['left']:
-                    #     print('right wall')
-                    #     self.right_wall = True
 
             if self.gamestate:
                 time_elapsed += self.dt
-
-                print(f'Current position: {self.player_positions[self.current_maze_index]}')
 
                 if self.total_position % 4 == 0 or self.total_position == 0:
                     self.current_maze_index = 0
@@ -453,22 +423,14 @@ class GameWindow():
                 elif self.total_position % 4 == 1 or self.total_position == 1:
                     self.current_maze_index = 3
 
-                # print(f"Total position: {self.total_position}")
-                print(f"Current maze: {self.maze_orientations[self.current_maze_index]}/{self.current_maze_index}\n")
-
                 if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
-                    print('top wall')
                     self.top_wall = True
                 if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['bottom']:
-                    print('bottom wall')
                     self.bottom_wall = True
                 if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['right']:
-                    print('left wall')
                     self.left_wall = True
                 if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['left']:
-                    print('right wall')
                     self.right_wall = True
-
 
                 # Check if the player is at the start
                 if self.player_positions[self.current_maze_index] == self.start_positions[self.current_maze_index]:
@@ -487,14 +449,18 @@ class GameWindow():
 
                 # if self.player_positions == self.start_positions
 
-                if self.top_wall == False:
-                    self.draw_text('t', self.screen_width - 500, self.screen_height // 10, self.colors["BLACK"])
-                if self.bottom_wall == False:
-                    self.draw_text('b', self.screen_width - 450, self.screen_height // 10, self.colors["BLACK"])
-                if self.right_wall == False:
-                    self.draw_text('l', self.screen_width - 400, self.screen_height // 10, self.colors["BLACK"])
-                if self.left_wall == False:
-                    self.draw_text('r', self.screen_width - 350, self.screen_height // 10, self.colors["BLACK"])
+                # logic to check path options
+                # if self.top_wall == False:
+                #     self.draw_text('t', self.screen_width - 500, self.screen_height // 10, self.colors["BLACK"])
+                # if self.bottom_wall == False:
+                #     self.draw_text('b', self.screen_width - 450, self.screen_height // 10, self.colors["BLACK"])
+                # if self.right_wall == False:
+                #     self.draw_text('l', self.screen_width - 400, self.screen_height // 10, self.colors["BLACK"])
+                # if self.left_wall == False:
+                #     self.draw_text('r', self.screen_width - 350, self.screen_height // 10, self.colors["BLACK"])
+                
+                self.player_points = f'{int(self.player_total_points)}'
+                self.draw_text(self.player_points, self.screen_width - 200, self.screen_height // 10, self.colors["BLACK"])
                 
             else:
                 self.screen.fill(self.colors["GREY"])
