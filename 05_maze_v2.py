@@ -179,7 +179,8 @@ class GameWindow():
     
     def load_images(self):
         all_images = [
-            'new_start', 'new_left', 'new_left_right', 'new_left_straight', 'new_left_straight_right', 'new_none_dark', 'new_right', 'new_straight_long', 'new_straight_right', 'new_end'
+            'new_start', 'new_left', 'new_left_right', 'new_left_straight', 'new_left_straight_right', 
+            'new_none_dark', 'new_right', 'new_straight_close', 'new_straight_long', 'new_straight_right', 'new_end'
         ]
         images = {}
         for wall in all_images:
@@ -210,7 +211,10 @@ class GameWindow():
         elif self.top_wall:
             image_key = "new_left_right"
         elif self.left_wall and self.right_wall:
-            image_key = "new_straight_long"
+            if self.player_positions[self.current_maze_index] == self.start_positions[self.current_maze_index]:
+                image_key = "new_straight_close"
+            else:
+                image_key = "new_straight_long"
         elif self.left_wall:
             image_key = "new_left_straight"
         elif self.right_wall:
