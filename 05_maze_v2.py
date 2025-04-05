@@ -235,11 +235,13 @@ class GameWindow():
                 if self.current_maze_index == 2:
                     start_image = pygame.transform.rotate(start_image, 180)
                 if self.current_maze_index == 1:
-                    start_image = pygame.transform.rotate(start_image, 90)
-                    start_position = (360, 440)  # Default position
-                if self.current_maze_index == 3:
+                    start_image = pygame.transform.scale(start_image, (100, 80))
                     start_image = pygame.transform.rotate(start_image, 270)
-                    start_position = (360, 440)  # Default position
+                    start_position = (350, 480)  # Default position
+                if self.current_maze_index == 3:
+                    start_image = pygame.transform.scale(start_image, (100, 80))
+                    start_image = pygame.transform.rotate(start_image, 90)
+                    start_position = (350, 480)  # Default position
                 self.screen.blit(start_image, start_position)
 
         # Draw the start image at a different position if self.start is True
