@@ -17,6 +17,7 @@ class GameWindow():
         self.dt = 0
         self.player_total_points = 0
         self.gamestate = True
+        self.maze_size = 3
         self.maze_setup()
 
         self.total_position = 0
@@ -32,10 +33,10 @@ class GameWindow():
         self.minimap = False
         self.start = False
         self.end = False
-
+        
     def maze_setup(self):
         # Maze setup
-        self.width, self.height = 5, 5  # Maze size (6x6)
+        self.width, self.height = self.maze_size, self.maze_size  # Maze size (6x6)
         self.cell_size = 60  # Each cell (room) will be 60x60 pixels
         self.base_maze = self.create_maze(self.width, self.height)
         self.mazes = [
@@ -158,8 +159,13 @@ class GameWindow():
         pygame.draw.circle(self.screen, self.colors["RED"], (player_x_pos, player_y_pos), 10)
 
     def next_game(self):
+        self.load_images()
+        if self.player_total_points != 0:
+            self.fade_out()
+            self.maze_setup()
         self.total_position = 0
         self.current_maze_index = 0
+        self.maze_size += 1
         self.gamestate = True
         self.top_wall = False
         self.bottom_wall = False
@@ -167,20 +173,41 @@ class GameWindow():
         self.left_wall = False
         self.start = False
         self.end = False
-        self.maze_setup()        
+
+    def fade_out(self, speed=5):
+        fade_surface = pygame.Surface(self.screen.get_size())
+        fade_surface.fill((0, 0, 0))  # Black overlay
+
+        for alpha in range(0, 256, speed):
+            self.draw_wall_images()  # Re-render the scene behind the fade
+            fade_surface.set_alpha(alpha)
+            self.screen.blit(fade_surface, (0, 0))
+            pygame.display.update()
+            pygame.time.delay(10)
 
     def reset_game(self):
         self.player_total_points = 0
+        self.maze_size = 3
         self.next_game()
+        self.maze_setup()
     
     def draw_text(self, text, x, y, color):
         text_surface = self.font.render(text, True, color)
         self.screen.blit(text_surface, (x, y))
     
+    def tint_surface(self, surface, tint_color):
+        """ Apply a red tint to a surface """
+        tinted = surface.copy()
+        tint = pygame.Surface(surface.get_size()).convert_alpha()
+        tint.fill(tint_color)
+        tinted.blit(tint, (0, 0), special_flags=pygame.BLEND_RGBA_ADD)
+        return tinted
+    
     def load_images(self):
         all_images = [
             'new_start', 'new_left', 'new_left_right', 'new_left_straight', 'new_left_straight_right', 
-            'new_none_dark', 'new_right', 'new_straight_close', 'new_straight_long', 'new_straight_right', 'new_end'
+            'new_none_dark', 'new_right', 'new_straight_close', 'new_straight_long', 'new_straight_long_2', 
+            'new_straight_right', 'new_end', 'ladder', 'black'
         ]
         images = {}
         for wall in all_images:
@@ -192,6 +219,9 @@ class GameWindow():
                     image = pygame.transform.scale(image, (150, 80))
                 if wall == 'new_end':
                     image = pygame.transform.scale(image, (150, 80))
+                if wall == 'ladder':
+                    image = pygame.transform.scale(image, (300, 80))
+                
                 images[wall] = image 
                 
             except pygame.error as e:
@@ -213,8 +243,10 @@ class GameWindow():
         elif self.left_wall and self.right_wall:
             if self.player_positions[self.current_maze_index] == self.start_positions[self.current_maze_index]:
                 image_key = "new_straight_close"
-            else:
+            elif self.current_maze_index in [0, 1]:
                 image_key = "new_straight_long"
+            else:
+                image_key = "new_straight_long_2"
         elif self.left_wall:
             image_key = "new_left_straight"
         elif self.right_wall:
@@ -224,7 +256,10 @@ class GameWindow():
 
         # Check if the image exists in the images dictionary and blit it to the screen
         if image_key in self.images and self.images[image_key]:
-            self.screen.blit(self.images[image_key], wall_position)
+            image = self.images[image_key]
+            if self.player_total_points > 5:
+                image = self.tint_surface(self.images[image_key], (80, 0, 0, 50))  # Reddish overlay
+            self.screen.blit(image, wall_position)
 
         # Draw the start image at a different position if self.start is True
         # Draw the start image at a different position if self.start is True
@@ -449,11 +484,12 @@ class GameWindow():
 
                 self.draw_wall_images()
 
+                if self.end and self.player_total_points == 0:
+                    self.draw_text('press SPACE to continue...', self.screen_width - 650, self.screen_height - 50, self.colors["GREY2"])
+
                 if self.minimap == True:
                     self.draw_maze(self.mazes[self.current_maze_index])
                     self.draw_player(self.player_positions[self.current_maze_index])
-
-                # if self.player_positions == self.start_positions
 
                 # logic to check path options
                 # if self.top_wall == False:
