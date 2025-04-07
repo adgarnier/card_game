@@ -257,12 +257,10 @@ class GameWindow():
         # Check if the image exists in the images dictionary and blit it to the screen
         if image_key in self.images and self.images[image_key]:
             image = self.images[image_key]
-            if self.player_total_points > 5:
+            if self.player_total_points == 5:
                 image = self.tint_surface(self.images[image_key], (80, 0, 0, 50))  # Reddish overlay
             self.screen.blit(image, wall_position)
 
-        # Draw the start image at a different position if self.start is True
-        # Draw the start image at a different position if self.start is True
         if self.start:
             start_key = "new_start"
             start_position = (320, 480)  # Default position
@@ -283,7 +281,6 @@ class GameWindow():
                     start_position = (350, 480)  # Default position
                 self.screen.blit(start_image, start_position)
 
-        # Draw the start image at a different position if self.start is True
         if self.end:
             end_position = (320, 480)  # You can set this to any position you want
             end_key = "new_end"
@@ -320,6 +317,32 @@ class GameWindow():
                     self.left_wall = False
                     if event.key == pygame.K_UP and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
                         self.total_position += 0
+                        
+                        A = [
+                            (self.player_positions[0][0], self.player_positions[0][1] - 1),
+                            (self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                            (self.player_positions[2][0], self.player_positions[2][1] + 1),
+                            (self.player_positions[3][0] - 1, self.player_positions[3][1])
+                            ]
+                        B = [
+                            (self.player_positions[0][0], self.player_positions[0][1] + 1),
+                            (self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                            (self.player_positions[2][0], self.player_positions[2][1] - 1),
+                            (self.player_positions[3][0] + 1, self.player_positions[3][1])
+                            ]
+                        C = [
+                            (self.player_positions[0][0] + 1, self.player_positions[0][1]),
+                            (self.player_positions[1][0], self.player_positions[1][1] + 1),
+                            (self.player_positions[2][0] - 1, self.player_positions[2][1]),
+                            (self.player_positions[3][0], self.player_positions[3][1] - 1)
+                            ]
+                        D = [
+                            (self.player_positions[0][0] - 1, self.player_positions[0][1]),
+                            (self.player_positions[1][0], self.player_positions[1][1] - 1),
+                            (self.player_positions[2][0] + 1, self.player_positions[2][1]),
+                            (self.player_positions[3][0], self.player_positions[3][1] + 1)
+                            ]
+                        
                         if self.current_maze_index == 0:
                             self.player_positions = [
                                 (self.player_positions[0][0], self.player_positions[0][1] - 1),
