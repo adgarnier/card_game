@@ -2,7 +2,6 @@ import pygame
 import random
 import json
 import os
-import Levenshtein  # You may need to install the `python-Levenshtein` package
 
 class GameWindow:
     def __init__(self):
@@ -15,7 +14,7 @@ class GameWindow:
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
 
         # Set the title of the window
-        pygame.display.set_caption("Word Guessing Game")
+        pygame.display.set_caption("Match the Meaning")
 
         # Define colors
         self.WHITE = (255, 255, 255)
@@ -30,13 +29,15 @@ class GameWindow:
 
         # Initialize font
         self.font = pygame.font.SysFont(None, 50)
-        self.small_font = pygame.font.SysFont(None, 30)
+        self.small_font = pygame.font.SysFont(None, 40)
 
         # Load dictionary
         self.load_dictionary()
 
+        self.player_total_points = 0
+
         # Reset game state
-        self.reset_game()
+        self.next_round()
 
     def load_dictionary(self):
         # Load the dictionary from the file
@@ -45,13 +46,14 @@ class GameWindow:
 
     def reset_game(self):
         # Reset the game state
-        self.score = 0
-        self.guessed_word = ""
-        
+        self.player_total_points = 0
+        self.next_round()
+
+    def next_round(self):
         # Keep picking a word until we find one with meanings
         while True:
             self.word = random.choice(list(self.dictionary.keys()))  # Random word from the dictionary
-            if self.dictionary[self.word]["MEANINGS"]:  # Check if there are meanings available
+            if self.dictionary[self.word]["MEANINGS"] and len(self.word) < 16:  # Check if there are meanings available
                 break
 
         self.length = len(self.dictionary[self.word])
@@ -63,6 +65,15 @@ class GameWindow:
         self.synonyms = str(self.synonyms).replace("[", "").replace("]", "").replace("\'", "").replace(word, "")
         self.game_over = False
         self.feedback = ""
+        self.feedback_timer = 0
+
+        # Generate options
+        self.options = [self.word]
+        while len(self.options) < 6:
+            random_word = random.choice(list(self.dictionary.keys()))
+            if random_word not in self.options and len(random_word) < 16:
+                self.options.append(random_word)
+        random.shuffle(self.options)
 
     def draw_text(self, text, x, y, font, color):
         # Break the text into lines if it exceeds the screen width
@@ -72,7 +83,7 @@ class GameWindow:
 
         for word in words:
             # If the word doesn't fit on the current line, move it to the next line
-            if font.size(current_line + word)[0] <= self.screen_width - 500:  # 40px padding from the edge
+            if font.size(current_line + word)[0] <= self.screen_width - 110:  # 40px padding from the edge
                 current_line += word + " "
             else:
                 lines.append(current_line)
@@ -86,22 +97,6 @@ class GameWindow:
             text_surface = font.render(line, True, color)
             self.screen.blit(text_surface, (x, y + i * line_height))
 
-    def get_feedback(self):
-        # Calculate Levenshtein distance between guessed word and the correct word
-        if self.guessed_word:
-            distance = Levenshtein.distance(self.guessed_word.lower(), self.word.lower())
-            if distance == 0:
-                return "Correct!"
-            elif distance <= 2:  # If the word is close, within a 2-character difference
-                return "<=2 letters away"
-            elif distance <= 5:  # If the word is close, within a 2-character difference
-                return "<=5 letters away"
-            elif distance <= 10:  # If the word is close, within a 2-character difference
-                return "<=10 letters away"
-            else:
-                return "Try again!"
-        return ""
-
     def main(self):
         running = True
         clock = pygame.time.Clock()
@@ -112,46 +107,56 @@ class GameWindow:
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN and not self.game_over:
-                        if self.guessed_word.lower() == self.word.lower():  # Check if the guess is correct
-                            self.score += 1
-                            self.reset_game()
-                            self.feedback = ""  # Clear feedback after resetting the word
-                        else:
-                            self.feedback = self.get_feedback()  # Give feedback if the guess is close
-                            self.guessed_word = ""
-                    elif event.key == pygame.K_BACKSPACE:
-                        self.guessed_word = self.guessed_word[:-1]  # Remove last character
-                    elif event.key >= 97 and event.key <= 122:  # Check for alphabetic keys a-z
-                        self.guessed_word += chr(event.key)
-                    elif event.key == pygame.K_ESCAPE:  # If the player presses the 'ESC' key, skip the definition
+                    if event.key == pygame.K_ESCAPE:  # If the player presses the 'ESC' key, skip the definition
                         self.feedback = f"The word was: {self.word}"  # Show the correct word
-                        self.reset_game()
-                        self.guessed_word = ""  # Clear any previous guess
+                        self.next_round()
                         self.feedback = ""  # Clear feedback after skipping
+                    elif event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6] and not self.feedback:
+                        selected_option = self.options[event.key - pygame.K_1]
+                        if selected_option == self.word:
+                            self.player_total_points += 1
+                            self.feedback = f"Correct! The word was: {self.word}"
+                            print(self.player_total_points)
+                        else:
+                            self.feedback = f"Wrong! The word was: {self.word}"
+                        self.feedback_timer = pygame.time.get_ticks()
 
             # Fill the screen with white
             self.screen.fill(self.GREY)
 
             if not self.game_over:
                 # Draw the definition as the hint
-                self.draw_text(f"TYPE: {self.type}", 400, 120, self.small_font, self.BLACK)
-                self.draw_text(f"LENGTH: {len(self.word)}", 80, 120, self.small_font, self.BLACK)
-                self.draw_text(f"DEFINITION: {self.definition}", 80, 150, self.small_font, self.BLACK)
-                self.draw_text(f"SYNONYMS: {self.synonyms}", 400, 150, self.small_font, self.BLACK)
+                # self.draw_text(f"TYPE: {self.type}", 400, 120, self.small_font, self.BLACK)
+                # self.draw_text(f"LENGTH: {len(self.word)}", 80, 120, self.small_font, self.BLACK)
+                self.draw_text(f"{self.definition}", 80, 110, self.font, self.BLACK)
+                # self.draw_text(f"SYNONYMS: {self.synonyms}", 400, 150, self.small_font, self.BLACK)
 
-                # Draw the current guessed word
-                self.draw_text(f"Guess the word: {self.guessed_word}", self.screen_width // 10, self.screen_height - 100, self.font, self.BLACK)
+                # Draw the options
+                f = 0
+                for i, option in enumerate(self.options):
+                    if i < 3:
+                        square = pygame.Rect(70, 392 + i * 60, 330, 40)
+                        pygame.draw.rect(self.screen, self.GOLD, square)
+                        self.draw_text(f"{i+1}. {option}", 80, 400 + i * 60, self.small_font, self.BLACK)
+                    else:
+                        square = pygame.Rect(420, 392 + f * 60, 330, 40)
+                        pygame.draw.rect(self.screen, self.GOLD, square)
+                        self.draw_text(f"{i+1}. {option}", 430, 400 + f * 60, self.small_font, self.BLACK)
+                        f += 1
 
                 # Draw the score
-                self.draw_text(f"{self.score}", self.screen_width - 200, self.screen_height // 10, self.font, self.BLACK)
+                total_points = str(self.player_total_points)
+                self.draw_text(total_points, self.screen_width - 200, self.screen_height // 10, self.font, self.BLACK)
 
                 # Draw feedback if available
                 if self.feedback:
-                    self.draw_text(self.feedback, self.screen_width // 10, self.screen_height - 200, self.font, self.GREEN if "close" in self.feedback.lower() else self.RED)
+                    self.draw_text(self.feedback, self.screen_width // 10, 340, self.font, self.GREEN if "Correct" in self.feedback else self.RED)
+                    if pygame.time.get_ticks() - self.feedback_timer > 2000:  # Display feedback for 2 seconds
+                        self.next_round()
+                        self.feedback = ""
             else:
                 # Display game over message
-                self.draw_text(f"Final Score: {self.score}", self.screen_width // 4, self.screen_height // 2, self.font, self.RED)
+                self.draw_text(f"Final Score: {self.player_total_points}", self.screen_width // 4, self.screen_height // 2, self.font, self.RED)
 
             # Flip the display to put your work on screen
             pygame.display.flip()

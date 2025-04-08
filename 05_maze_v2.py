@@ -524,8 +524,8 @@ class GameWindow():
                 # if self.left_wall == False:
                 #     self.draw_text('r', self.screen_width - 350, self.screen_height // 10, self.colors["BLACK"])
                 
-                self.player_points = f'{int(self.player_total_points)}'
-                self.draw_text(self.player_points, self.screen_width - 200, self.screen_height // 10, self.colors["BLACK"])
+                # self.player_points = f'{int(self.player_total_points)}'
+                # self.draw_text(self.player_points, self.screen_width - 200, self.screen_height // 10, self.colors["BLACK"])
                 
             else:
                 self.screen.fill(self.colors["GREY"])
