@@ -26,6 +26,7 @@ class GameWindow:
         self.PURPLE = (157, 77, 187)
         self.GOLD = (243, 175, 25)
         self.GREY2 = (100, 100, 100)
+        self.GREY3 = (200, 200, 200)
 
         # Initialize font
         self.font = pygame.font.SysFont(None, 50)
@@ -61,7 +62,6 @@ class GameWindow:
         self.definition = self.dictionary[self.word]["MEANINGS"][0][1]  # Get the first meaning only
         self.synonyms = self.dictionary[self.word]["SYNONYMS"][:]
         word = str(self.word).capitalize()
-        print(word)
         self.synonyms = str(self.synonyms).replace("[", "").replace("]", "").replace("\'", "").replace(word, "")
         self.game_over = False
         self.feedback = ""
@@ -75,6 +75,9 @@ class GameWindow:
                 self.options.append(random_word)
         random.shuffle(self.options)
 
+        # Create a dictionary to store whether each option was selected correctly
+        self.selected_status = {option: None for option in self.options}
+
     def draw_text(self, text, x, y, font, color):
         # Break the text into lines if it exceeds the screen width
         words = text.split(" ")
@@ -83,7 +86,7 @@ class GameWindow:
 
         for word in words:
             # If the word doesn't fit on the current line, move it to the next line
-            if font.size(current_line + word)[0] <= self.screen_width - 110:  # 40px padding from the edge
+            if font.size(current_line + word)[0] <= self.screen_width - 140:  # 40px padding from the edge
                 current_line += word + " "
             else:
                 lines.append(current_line)
@@ -97,21 +100,33 @@ class GameWindow:
             text_surface = font.render(line, True, color)
             self.screen.blit(text_surface, (x, y + i * line_height))
 
+    def check_click(self, pos):
+        for i, (rect, option) in enumerate(self.option_rects):
+            if rect.collidepoint(pos):
+                if self.selected_status[option] is None:  # Only proceed if the option hasn't been selected yet
+                    if option == self.word:
+                        self.selected_status[option] = "correct"
+                        self.player_total_points += 1
+                        self.feedback = f"Correct! The word was: {self.word}"
+                    else:
+                        self.selected_status[option] = "incorrect"
+                        self.feedback = f"Wrong! The word was: {self.word}"
+                    self.feedback_timer = pygame.time.get_ticks()
+
     def main(self):
         running = True
         clock = pygame.time.Clock()
 
         while running:
-            # Poll for events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:  # If the player presses the 'ESC' key, skip the definition
-                        self.feedback = f"The word was: {self.word}"  # Show the correct word
+                    if event.key == pygame.K_ESCAPE:
+                        self.feedback = f"The word was: {self.word}"
                         self.next_round()
-                        self.feedback = ""  # Clear feedback after skipping
-                    elif event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6] and not self.feedback:
+                        self.feedback = ""
+                    elif event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6]:
                         selected_option = self.options[event.key - pygame.K_1]
                         if selected_option == self.word:
                             self.player_total_points += 1
@@ -120,48 +135,50 @@ class GameWindow:
                         else:
                             self.feedback = f"Wrong! The word was: {self.word}"
                         self.feedback_timer = pygame.time.get_ticks()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.check_click(event.pos)
 
-            # Fill the screen with white
             self.screen.fill(self.GREY)
 
             if not self.game_over:
-                # Draw the definition as the hint
-                # self.draw_text(f"TYPE: {self.type}", 400, 120, self.small_font, self.BLACK)
-                # self.draw_text(f"LENGTH: {len(self.word)}", 80, 120, self.small_font, self.BLACK)
+                
+                square = pygame.Rect(70, 100, 680, 230)
+                pygame.draw.rect(self.screen, self.GREY3, square)
                 self.draw_text(f"{self.definition}", 80, 110, self.font, self.BLACK)
-                # self.draw_text(f"SYNONYMS: {self.synonyms}", 400, 150, self.small_font, self.BLACK)
 
-                # Draw the options
+                self.option_rects = [] 
                 f = 0
                 for i, option in enumerate(self.options):
                     if i < 3:
                         square = pygame.Rect(70, 392 + i * 60, 330, 40)
-                        pygame.draw.rect(self.screen, self.GOLD, square)
-                        self.draw_text(f"{i+1}. {option}", 80, 400 + i * 60, self.small_font, self.BLACK)
                     else:
                         square = pygame.Rect(420, 392 + f * 60, 330, 40)
-                        pygame.draw.rect(self.screen, self.GOLD, square)
-                        self.draw_text(f"{i+1}. {option}", 430, 400 + f * 60, self.small_font, self.BLACK)
                         f += 1
 
-                # Draw the score
+                    # Color the option based on whether it was selected correctly
+                    if self.selected_status[option] == "correct":
+                        color = self.GREEN
+                    elif self.selected_status[option] == "incorrect":
+                        color = self.RED
+                    else:
+                        color = self.GREY3
+
+                    pygame.draw.rect(self.screen, color, square)
+                    self.draw_text(f"{i+1}. {option}", square.x + 10, square.y + 5, self.small_font, self.BLACK)
+                    self.option_rects.append((square, option))
+
                 total_points = str(self.player_total_points)
                 self.draw_text(total_points, self.screen_width - 200, self.screen_height // 10, self.font, self.BLACK)
 
-                # Draw feedback if available
                 if self.feedback:
                     self.draw_text(self.feedback, self.screen_width // 10, 340, self.font, self.GREEN if "Correct" in self.feedback else self.RED)
-                    if pygame.time.get_ticks() - self.feedback_timer > 2000:  # Display feedback for 2 seconds
+                    if pygame.time.get_ticks() - self.feedback_timer > 2000:
                         self.next_round()
                         self.feedback = ""
             else:
-                # Display game over message
                 self.draw_text(f"Final Score: {self.player_total_points}", self.screen_width // 4, self.screen_height // 2, self.font, self.RED)
 
-            # Flip the display to put your work on screen
             pygame.display.flip()
-
-            # Limits FPS to 60
             clock.tick(60)
 
         pygame.quit()

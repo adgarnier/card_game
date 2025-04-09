@@ -1,4 +1,3 @@
-import math
 import pygame
 import random
 import os
@@ -290,6 +289,241 @@ class GameWindow():
     def toggle_minimap(self):
         self.minimap = not self.minimap
 
+    # Add this method to handle mouse click actions
+    def handle_click(self, mouse_pos):      
+
+        # Define areas for left, straight, and right doors based on the screen position
+        left_area = (0, self.screen_width // 3)  # Left door
+        straight_area = (self.screen_width // 3, 2 * self.screen_width // 3, 0, 500)
+        right_area = (2 * self.screen_width // 3, self.screen_width)  # Right door
+        backwards_area = (self.screen_height - 100, self.screen_height)
+        next_area = (self.screen_height - 150, self.screen_height)
+
+        if next_area[0] <= mouse_pos[1] < next_area[1] \
+        and self.player_positions[self.current_maze_index] == self.end_positions[self.current_maze_index]:
+            self.player_total_points += 1
+            self.next_game()
+
+        self.start = False
+        self.end = False
+        # Move player with arrow keys
+        self.top_wall = False
+        self.bottom_wall = False
+        self.right_wall = False
+        self.left_wall = False
+
+        if straight_area[0] <= mouse_pos[0] < straight_area[1] \
+        and straight_area[2] <= mouse_pos[1] < straight_area[3] \
+        and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
+            self.total_position += 0  
+            # Move straight
+            if self.current_maze_index == 0:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])]
+            # backwards
+            if self.current_maze_index == 2:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] + 1),(self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] - 1),(self.player_positions[3][0] + 1, self.player_positions[3][1])]
+            # left
+            if self.current_maze_index == 3:
+                self.player_positions = [
+                    (self.player_positions[0][0] + 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] + 1),
+                    (self.player_positions[2][0] - 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] - 1)]
+            # right
+            if self.current_maze_index == 1:
+                self.player_positions = [
+                    (self.player_positions[0][0] - 1, self.player_positions[0][1]), (self.player_positions[1][0], self.player_positions[1][1] - 1), 
+                    (self.player_positions[2][0] + 1, self.player_positions[2][1]), (self.player_positions[3][0], self.player_positions[3][1] + 1)]
+
+        elif backwards_area[0] <= mouse_pos[1] < backwards_area[1] and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['bottom']:
+            self.total_position += 2  # Move backwards
+            if self.current_maze_index == 0:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] + 1),(self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] - 1),(self.player_positions[3][0] + 1, self.player_positions[3][1])
+                ]
+            if self.current_maze_index == 2:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
+                ]
+            if self.current_maze_index == 1:
+                self.player_positions = [
+                    (self.player_positions[0][0] + 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] + 1),
+                    (self.player_positions[2][0] - 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] - 1)
+                    ]
+            if self.current_maze_index == 3:
+                self.player_positions = [
+                    (self.player_positions[0][0] - 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] - 1),
+                    (self.player_positions[2][0] + 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] + 1)
+                    ]
+
+        elif left_area[0] <= mouse_pos[0] < left_area[1] and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['left']:
+            self.total_position -= 1  # Move right
+            # straight
+            if self.current_maze_index == 0:
+                self.player_positions = [
+                    (self.player_positions[0][0] - 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] - 1),
+                    (self.player_positions[2][0] + 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] + 1)
+                ]
+            # backwards
+            if self.current_maze_index == 2:
+                self.player_positions = [
+                    (self.player_positions[0][0] + 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] + 1),
+                    (self.player_positions[2][0] - 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] - 1)
+                ]   
+            # left
+            if self.current_maze_index == 3:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
+                    ]
+            # right
+            if self.current_maze_index == 1:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] + 1),(self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] - 1),(self.player_positions[3][0] + 1, self.player_positions[3][1])
+                    ]
+            
+        elif right_area[0] <= mouse_pos[0] < right_area[1] and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['right']:
+            self.total_position += 1  # Move left
+            # straight
+            if self.current_maze_index == 0:
+                self.player_positions = [
+                    (self.player_positions[0][0] + 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] + 1),
+                    (self.player_positions[2][0] - 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] - 1)
+                ]
+            # backwards
+            if self.current_maze_index == 2:
+                self.player_positions = [
+                    (self.player_positions[0][0] - 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] - 1),
+                    (self.player_positions[2][0] + 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] + 1)
+                ]
+            # left
+            if self.current_maze_index == 3:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] + 1),(self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] - 1),(self.player_positions[3][0] + 1, self.player_positions[3][1])
+                    ]
+            # right
+            if self.current_maze_index == 1:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
+                    ]
+
+    def handle_key_movement(self, event_key):
+        self.start = False
+        self.end = False
+        # Move player with arrow keys
+        self.top_wall = False
+        self.bottom_wall = False
+        self.right_wall = False
+        self.left_wall = False
+        if event_key == pygame.K_UP and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
+            self.total_position += 0
+            if self.current_maze_index == 0:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
+                    ]
+            if self.current_maze_index == 2:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] + 1),(self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] - 1),(self.player_positions[3][0] + 1, self.player_positions[3][1])
+                    ]
+            # left
+            if self.current_maze_index == 3:
+                self.player_positions = [
+                    (self.player_positions[0][0] + 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] + 1),
+                    (self.player_positions[2][0] - 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] - 1)
+                    ]
+            # right
+            if self.current_maze_index == 1:
+                self.player_positions = [
+                    (self.player_positions[0][0] - 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] - 1),
+                    (self.player_positions[2][0] + 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] + 1)
+                    ]
+                                        
+        elif event_key == pygame.K_DOWN and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['bottom']:
+            self.total_position += 2
+            if self.current_maze_index == 0:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] + 1),(self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] - 1),(self.player_positions[3][0] + 1, self.player_positions[3][1])
+                ]
+            if self.current_maze_index == 2:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
+                ]
+            if self.current_maze_index == 1:
+                self.player_positions = [
+                    (self.player_positions[0][0] + 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] + 1),
+                    (self.player_positions[2][0] - 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] - 1)
+                    ]
+            if self.current_maze_index == 3:
+                self.player_positions = [
+                    (self.player_positions[0][0] - 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] - 1),
+                    (self.player_positions[2][0] + 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] + 1)
+                    ]
+                                        
+        elif event_key == pygame.K_LEFT and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['left']:
+            self.total_position -= 1
+            # straight
+            if self.current_maze_index == 0:
+                self.player_positions = [
+                    (self.player_positions[0][0] - 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] - 1),
+                    (self.player_positions[2][0] + 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] + 1)
+                ]
+            # backwards
+            if self.current_maze_index == 2:
+                self.player_positions = [
+                    (self.player_positions[0][0] + 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] + 1),
+                    (self.player_positions[2][0] - 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] - 1)
+                ]   
+            # left
+            if self.current_maze_index == 3:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
+                    ]
+            # right
+            if self.current_maze_index == 1:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] + 1),(self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] - 1),(self.player_positions[3][0] + 1, self.player_positions[3][1])
+                    ]
+            
+        elif event_key == pygame.K_RIGHT and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['right']:
+            self.total_position += 1
+            # straight
+            if self.current_maze_index == 0:
+                self.player_positions = [
+                    (self.player_positions[0][0] + 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] + 1),
+                    (self.player_positions[2][0] - 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] - 1)
+                ]
+            # backwards
+            if self.current_maze_index == 2:
+                self.player_positions = [
+                    (self.player_positions[0][0] - 1, self.player_positions[0][1]),(self.player_positions[1][0], self.player_positions[1][1] - 1),
+                    (self.player_positions[2][0] + 1, self.player_positions[2][1]),(self.player_positions[3][0], self.player_positions[3][1] + 1)
+                ]
+            # left
+            if self.current_maze_index == 3:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] + 1),(self.player_positions[1][0] - 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] - 1),(self.player_positions[3][0] + 1, self.player_positions[3][1])
+                    ]
+            # right
+            if self.current_maze_index == 1:
+                self.player_positions = [
+                    (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
+                    (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
+                    ]
+
     def main(self):
         running = True
         clock = pygame.time.Clock()
@@ -307,173 +541,13 @@ class GameWindow():
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and self.player_positions[self.current_maze_index] == self.end_positions[self.current_maze_index]:
                     self.player_total_points += 1
                     self.next_game()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # Left mouse button
+                        mouse_pos = event.pos
+                        self.handle_click(mouse_pos)
                 elif event.type == pygame.KEYDOWN:
-                    self.start = False
-                    self.end = False
-                    # Move player with arrow keys
-                    self.top_wall = False
-                    self.bottom_wall = False
-                    self.right_wall = False
-                    self.left_wall = False
-                    if event.key == pygame.K_UP and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
-                        self.total_position += 0
-                        
-                        A = [
-                            (self.player_positions[0][0], self.player_positions[0][1] - 1),
-                            (self.player_positions[1][0] + 1, self.player_positions[1][1]),
-                            (self.player_positions[2][0], self.player_positions[2][1] + 1),
-                            (self.player_positions[3][0] - 1, self.player_positions[3][1])
-                            ]
-                        B = [
-                            (self.player_positions[0][0], self.player_positions[0][1] + 1),
-                            (self.player_positions[1][0] - 1, self.player_positions[1][1]),
-                            (self.player_positions[2][0], self.player_positions[2][1] - 1),
-                            (self.player_positions[3][0] + 1, self.player_positions[3][1])
-                            ]
-                        C = [
-                            (self.player_positions[0][0] + 1, self.player_positions[0][1]),
-                            (self.player_positions[1][0], self.player_positions[1][1] + 1),
-                            (self.player_positions[2][0] - 1, self.player_positions[2][1]),
-                            (self.player_positions[3][0], self.player_positions[3][1] - 1)
-                            ]
-                        D = [
-                            (self.player_positions[0][0] - 1, self.player_positions[0][1]),
-                            (self.player_positions[1][0], self.player_positions[1][1] - 1),
-                            (self.player_positions[2][0] + 1, self.player_positions[2][1]),
-                            (self.player_positions[3][0], self.player_positions[3][1] + 1)
-                            ]
-                        
-                        if self.current_maze_index == 0:
-                            self.player_positions = [
-                                (self.player_positions[0][0], self.player_positions[0][1] - 1),
-                                (self.player_positions[1][0] + 1, self.player_positions[1][1]),
-                                (self.player_positions[2][0], self.player_positions[2][1] + 1),
-                                (self.player_positions[3][0] - 1, self.player_positions[3][1])
-                                ]
-                        if self.current_maze_index == 2:
-                            self.player_positions = [
-                                (self.player_positions[0][0], self.player_positions[0][1] + 1),
-                                (self.player_positions[1][0] - 1, self.player_positions[1][1]),
-                                (self.player_positions[2][0], self.player_positions[2][1] - 1),
-                                (self.player_positions[3][0] + 1, self.player_positions[3][1])
-                                ]
-                        # left
-                        if self.current_maze_index == 3:
-                            self.player_positions = [
-                                (self.player_positions[0][0] + 1, self.player_positions[0][1]),
-                                (self.player_positions[1][0], self.player_positions[1][1] + 1),
-                                (self.player_positions[2][0] - 1, self.player_positions[2][1]),
-                                (self.player_positions[3][0], self.player_positions[3][1] - 1)
-                                ]
-                        # right
-                        if self.current_maze_index == 1:
-                            self.player_positions = [
-                                (self.player_positions[0][0] - 1, self.player_positions[0][1]),
-                                (self.player_positions[1][0], self.player_positions[1][1] - 1),
-                                (self.player_positions[2][0] + 1, self.player_positions[2][1]),
-                                (self.player_positions[3][0], self.player_positions[3][1] + 1)
-                                ]
-                                                    
-                    elif event.key == pygame.K_DOWN and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['bottom']:
-                        self.total_position += 2
-                        if self.current_maze_index == 0:
-                            self.player_positions = [
-                                (self.player_positions[0][0], self.player_positions[0][1] + 1),
-                                (self.player_positions[1][0] - 1, self.player_positions[1][1]),
-                                (self.player_positions[2][0], self.player_positions[2][1] - 1),
-                                (self.player_positions[3][0] + 1, self.player_positions[3][1])
-                            ]
-                        if self.current_maze_index == 2:
-                            self.player_positions = [
-                                (self.player_positions[0][0], self.player_positions[0][1] - 1),
-                                (self.player_positions[1][0] + 1, self.player_positions[1][1]),
-                                (self.player_positions[2][0], self.player_positions[2][1] + 1),
-                                (self.player_positions[3][0] - 1, self.player_positions[3][1])
-                            ]
-                        if self.current_maze_index == 1:
-                            self.player_positions = [
-                                (self.player_positions[0][0] + 1, self.player_positions[0][1]),
-                                (self.player_positions[1][0], self.player_positions[1][1] + 1),
-                                (self.player_positions[2][0] - 1, self.player_positions[2][1]),
-                                (self.player_positions[3][0], self.player_positions[3][1] - 1)
-                                ]
-                        if self.current_maze_index == 3:
-                            self.player_positions = [
-                                (self.player_positions[0][0] - 1, self.player_positions[0][1]),
-                                (self.player_positions[1][0], self.player_positions[1][1] - 1),
-                                (self.player_positions[2][0] + 1, self.player_positions[2][1]),
-                                (self.player_positions[3][0], self.player_positions[3][1] + 1)
-                                ]
-                                                    
-                    elif event.key == pygame.K_LEFT and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['left']:
-                        self.total_position -= 1
-                        # straight
-                        if self.current_maze_index == 0:
-                            self.player_positions = [
-                                (self.player_positions[0][0] - 1, self.player_positions[0][1]),
-                                (self.player_positions[1][0], self.player_positions[1][1] - 1),
-                                (self.player_positions[2][0] + 1, self.player_positions[2][1]),
-                                (self.player_positions[3][0], self.player_positions[3][1] + 1)
-                            ]
-                        # backwards
-                        if self.current_maze_index == 2:
-                            self.player_positions = [
-                                (self.player_positions[0][0] + 1, self.player_positions[0][1]),
-                                (self.player_positions[1][0], self.player_positions[1][1] + 1),
-                                (self.player_positions[2][0] - 1, self.player_positions[2][1]),
-                                (self.player_positions[3][0], self.player_positions[3][1] - 1)
-                            ]   
-                        # left
-                        if self.current_maze_index == 3:
-                            self.player_positions = [
-                                (self.player_positions[0][0], self.player_positions[0][1] - 1),
-                                (self.player_positions[1][0] + 1, self.player_positions[1][1]),
-                                (self.player_positions[2][0], self.player_positions[2][1] + 1),
-                                (self.player_positions[3][0] - 1, self.player_positions[3][1])
-                                ]
-                        # right
-                        if self.current_maze_index == 1:
-                            self.player_positions = [
-                                (self.player_positions[0][0], self.player_positions[0][1] + 1),
-                                (self.player_positions[1][0] - 1, self.player_positions[1][1]),
-                                (self.player_positions[2][0], self.player_positions[2][1] - 1),
-                                (self.player_positions[3][0] + 1, self.player_positions[3][1])
-                                ]
-                        
-                    elif event.key == pygame.K_RIGHT and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['right']:
-                        self.total_position += 1
-                        # straight
-                        if self.current_maze_index == 0:
-                            self.player_positions = [
-                                (self.player_positions[0][0] + 1, self.player_positions[0][1]),
-                                (self.player_positions[1][0], self.player_positions[1][1] + 1),
-                                (self.player_positions[2][0] - 1, self.player_positions[2][1]),
-                                (self.player_positions[3][0], self.player_positions[3][1] - 1)
-                            ]
-                        # backwards
-                        if self.current_maze_index == 2:
-                            self.player_positions = [
-                                (self.player_positions[0][0] - 1, self.player_positions[0][1]),
-                                (self.player_positions[1][0], self.player_positions[1][1] - 1),
-                                (self.player_positions[2][0] + 1, self.player_positions[2][1]),
-                                (self.player_positions[3][0], self.player_positions[3][1] + 1)
-                            ]
-                        # left
-                        if self.current_maze_index == 3:
-                            self.player_positions = [
-                                (self.player_positions[0][0], self.player_positions[0][1] + 1),
-                                (self.player_positions[1][0] - 1, self.player_positions[1][1]),
-                                (self.player_positions[2][0], self.player_positions[2][1] - 1),
-                                (self.player_positions[3][0] + 1, self.player_positions[3][1])
-                                ]
-                        # right
-                        if self.current_maze_index == 1:
-                            self.player_positions = [
-                                (self.player_positions[0][0], self.player_positions[0][1] - 1),
-                                (self.player_positions[1][0] + 1, self.player_positions[1][1]),
-                                (self.player_positions[2][0], self.player_positions[2][1] + 1),
-                                (self.player_positions[3][0] - 1, self.player_positions[3][1])
-                                ]
+                    event_key = event.key
+                    self.handle_key_movement(event_key)
 
             if self.gamestate:
                 time_elapsed += self.dt
@@ -513,19 +587,9 @@ class GameWindow():
                 if self.minimap == True:
                     self.draw_maze(self.mazes[self.current_maze_index])
                     self.draw_player(self.player_positions[self.current_maze_index])
-
-                # logic to check path options
-                # if self.top_wall == False:
-                #     self.draw_text('t', self.screen_width - 500, self.screen_height // 10, self.colors["BLACK"])
-                # if self.bottom_wall == False:
-                #     self.draw_text('b', self.screen_width - 450, self.screen_height // 10, self.colors["BLACK"])
-                # if self.right_wall == False:
-                #     self.draw_text('l', self.screen_width - 400, self.screen_height // 10, self.colors["BLACK"])
-                # if self.left_wall == False:
-                #     self.draw_text('r', self.screen_width - 350, self.screen_height // 10, self.colors["BLACK"])
                 
-                # self.player_points = f'{int(self.player_total_points)}'
-                # self.draw_text(self.player_points, self.screen_width - 200, self.screen_height // 10, self.colors["BLACK"])
+                self.player_points = f'{int(self.player_total_points)}'
+                self.draw_text(self.player_points, self.screen_width - 200, self.screen_height // 10, self.colors["BLACK"])
                 
             else:
                 self.screen.fill(self.colors["GREY"])
