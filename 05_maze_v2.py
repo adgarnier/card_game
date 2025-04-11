@@ -35,6 +35,7 @@ class GameWindow():
         self.skeleton = False
         self.painting = False
         self.note = False
+        self.grimreaper = False
         
     def maze_setup(self):
         # Maze setup
@@ -105,11 +106,22 @@ class GameWindow():
             (note_y, self.width - 1 - note_x)  # 90 degrees clockwise
         ]
 
+        grimreaper_x, grimreaper_y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
+        
+        # Transform the start position for each maze orientation
+        self.grimreaper_s = [
+            (grimreaper_x, grimreaper_y),  # Original
+            (self.height - 1 - grimreaper_y, grimreaper_x),  # 270 degrees clockwise
+            (self.width - 1 - grimreaper_x, self.height - 1 - grimreaper_y),  # 180 degrees
+            (grimreaper_y, self.width - 1 - grimreaper_x)  # 90 degrees clockwise
+        ]
+
         # Initialize player positions
         self.end_positions = list(self.end_s)
         self.skeleton_positions = list(self.skeleton_s)
         self.painting_positions = list(self.painting_s)
         self.note_positions = list(self.note_s)
+        self.grimreaper_positions = list(self.grimreaper_s)
         self.player_positions = list(self.start_positions)
 
     def rotate_maze(self, maze):
@@ -216,6 +228,7 @@ class GameWindow():
         self.skeleton = False
         self.painting = False
         self.note = False
+        self.grimreaper = False
 
     def fade_out(self, speed=5):
         fade_surface = pygame.Surface(self.screen.get_size())
@@ -250,8 +263,8 @@ class GameWindow():
         all_images = [
             'new_start', 'new_left', 'new_left_right', 'new_left_straight', 'new_left_straight_right', 
             'new_none_dark', 'new_right', 'new_straight_close', 'new_straight_long', 'new_straight_long_2', 
-            'new_straight_right', 'new_end', 'ladder', 'black', 'skeleton_front', 'skeleton_back',
-            'skeleton_side_1', 'skeleton_side_2', 'painting1', 'painting1_side1', 'painting1_side2', 'note'
+            'new_straight_right', 'new_end', 'ladder', 'skeleton_front', 'skeleton_back', 'skeleton_side_1',
+            'skeleton_side_2', 'painting1', 'painting1_side1', 'painting1_side2', 'note', 'grimreaper'
         ]
         images = {}
         for wall in all_images:
@@ -281,6 +294,10 @@ class GameWindow():
                     image = pygame.transform.scale(image, (400, 225))
                 if wall == 'note':
                     image = pygame.transform.scale(image, (60, 60))
+                if wall == 'grimreaper':
+                    image = pygame.transform.scale(image, (300, 600))
+                    image = pygame.transform.scale(image, (250, 500))
+
                 images[wall] = image 
                 
             except pygame.error as e:
@@ -346,7 +363,7 @@ class GameWindow():
             if end_key in self.images and self.images[end_key]:
                 self.screen.blit(self.images[end_key], end_position)  
 
-        if self.painting and not self.start and not self.end and not (self.left_wall and self.right_wall):
+        if self.painting:
             painting_key = 'painting1'
             painting_position = (800, 800)
             if painting_key in self.images and self.images[painting_key]:
@@ -364,7 +381,7 @@ class GameWindow():
                     painting_key = "painting1_side1"
                 self.screen.blit(self.images[painting_key], painting_position) 
                 
-        if self.note and self.current_maze_index == self.maze_for_note and not self.start and not self.end:
+        if self.note:
             note_key = "note"
             note_position = (self.note_position_x, self.note_position_y)
             if note_key in self.images and self.images[note_key]:
@@ -372,7 +389,7 @@ class GameWindow():
                 note = pygame.transform.rotate(note, self.note_rotation)
                 self.screen.blit(note, note_position) 
                 
-        if self.skeleton and not self.start and not self.end:
+        if self.skeleton:
             skeleton_key = "skeleton_front"
             skeleton_position = (240, 170)
             if skeleton_key in self.images and self.images[skeleton_key]:
@@ -386,6 +403,13 @@ class GameWindow():
                     skeleton_position = (500, 190)  # You can set this to any position you want
                     skeleton_key = "skeleton_side_2"
                 self.screen.blit(self.images[skeleton_key], skeleton_position)                  
+        
+        # if self.bottom_wall or not self.bottom_wall:
+        if self.grimreaper:
+            grimreaper_key = "grimreaper"
+            grimreaper_position = (280, 130)
+            if grimreaper_key in self.images and self.images[grimreaper_key]:
+                self.screen.blit(self.images[grimreaper_key], grimreaper_position)
     
     def toggle_minimap(self):
         self.minimap = not self.minimap
@@ -523,6 +547,7 @@ class GameWindow():
         self.skeleton = False
         self.painting = False
         self.note = False
+        self.grimreaper = False
         # Move player with arrow keys
         self.top_wall = False
         self.bottom_wall = False
@@ -685,14 +710,22 @@ class GameWindow():
                     self.end = True
                     # self.gamestate = False  # End the game if player reaches the end room
 
-                if self.player_positions[self.current_maze_index] == self.skeleton_positions[self.current_maze_index]:
+                if self.player_positions[self.current_maze_index] == self.skeleton_positions[self.current_maze_index] \
+                and not self.start and not self.end:
                     self.skeleton = True
 
-                if self.player_positions[self.current_maze_index] == self.painting_positions[self.current_maze_index]:
+                if self.player_positions[self.current_maze_index] == self.painting_positions[self.current_maze_index] \
+                and not self.start and not self.end and not (self.left_wall and self.right_wall):
                     self.painting = True
 
-                if self.player_positions[self.current_maze_index] == self.painting_positions[self.current_maze_index]:
+                if self.player_positions[self.current_maze_index] == self.note_positions[self.current_maze_index] \
+                and self.current_maze_index == self.maze_for_note and not self.start and not self.end:
                     self.note = True
+
+                if self.player_positions[self.current_maze_index] == self.grimreaper_positions[self.current_maze_index]\
+                and not self.start and not self.end and not self.skeleton and not self.note and not self.painting \
+                and self.top_wall and self.right_wall and self.left_wall and self.player_total_points > 0:
+                    self.grimreaper = True
 
                 self.draw_wall_images()
 
