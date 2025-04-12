@@ -23,20 +23,36 @@ class GameWindow():
         self.maze_orientations = ["straight", "right", "backwards", "left"]
         self.current_maze_index = 0
         
+        self.images = self.load_images()
+        self.minimap = False
+        self.falses()
+        
+    def falses(self):
+        # reset position
+        self.start = False
+        self.end = False
+        # reset walls
         self.top_wall = False
         self.bottom_wall = False
         self.right_wall = False
         self.left_wall = False
-        
-        self.images = self.load_images()
-        self.minimap = False
-        self.start = False
-        self.end = False
+        # reset images
         self.skeleton = False
         self.painting = False
         self.note = False
         self.grimreaper = False
         self.spider = False
+        
+    def generate_orientations(self, x, y, width, height):
+        return [
+            (x, y),  # Original
+            (height - 1 - y, x),  # 270 degrees clockwise
+            (width - 1 - x, height - 1 - y),  # 180 degrees
+            (y, width - 1 - x)  # 90 degrees clockwise
+        ]
+
+    def random_position(self, width, height):
+        return random.randint(0, width - 1), random.randint(0, height - 1)
         
     def maze_setup(self):
         # Maze setup
@@ -52,82 +68,33 @@ class GameWindow():
 
         # Define a single start position
         start_x, start_y = random.randint(0, self.width - 1), self.height - 1
-
-        # Transform the start position for each maze orientation
-        self.start_positions = [
-            (start_x, start_y),  # Original
-            (self.height - 1 - start_y, start_x),  # 270 degrees clockwise
-            (self.width - 1 - start_x, self.height - 1 - start_y),  # 180 degrees
-            (start_y, self.width - 1 - start_x)  # 90 degrees clockwise
-        ]
+        self.start_positions = self.generate_orientations(start_x, start_y, self.width, self.height)
 
         # Define a single end position
         end_x, end_y = random.choice([0, self.width - 1]), 0
-
-        # Transform the end position for each maze orientation
-        self.end_s = [
-            (end_x, end_y),  # Original
-            (self.height - 1 - end_y, end_x),  # 270 degrees clockwise
-            (self.width - 1 - end_x, self.height - 1 - end_y),  # 180 degrees
-            (end_y, self.width - 1 - end_x)  # 90 degrees clockwise
-        ]
+        self.end_s = self.generate_orientations(end_x, end_y, self.width, self.height)
         
-        # Define a single start position
-        skeleton_x, skeleton_y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
-        
-        # Transform the start position for each maze orientation
-        self.skeleton_s = [
-            (skeleton_x, skeleton_y),  # Original
-            (self.height - 1 - skeleton_y, skeleton_x),  # 270 degrees clockwise
-            (self.width - 1 - skeleton_x, self.height - 1 - skeleton_y),  # 180 degrees
-            (skeleton_y, self.width - 1 - skeleton_x)  # 90 degrees clockwise
-        ]
+        # Generate all positions with transformations
+        skeleton_x, skeleton_y = self.random_position(self.width, self.height)
+        self.skeleton_s = self.generate_orientations(skeleton_x, skeleton_y, self.width, self.height)
 
-        painting_x, painting_y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
+        painting_x, painting_y = self.random_position(self.width, self.height)
+        self.painting_s = self.generate_orientations(painting_x, painting_y, self.width, self.height)
 
-        # Transform the start position for each maze orientation
-        self.painting_s = [
-            (painting_x, painting_y),  # Original
-            (self.height - 1 - painting_y, painting_x),  # 270 degrees clockwise
-            (self.width - 1 - painting_x, self.height - 1 - painting_y),  # 180 degrees
-            (painting_y, self.width - 1 - painting_x)  # 90 degrees clockwise
-        ]
-
-        note_x, note_y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
-        self.maze_for_note = random.randint(0,3)
+        note_x, note_y = self.random_position(self.width, self.height)
+        self.note_s = self.generate_orientations(note_x, note_y, self.width, self.height)
+        self.maze_for_note = random.randint(0, 3)
         self.note_position_x = random.randint(200, 540)
         self.note_position_y = random.randint(450, 520)
-        self.note_rotation = random.randint(0,360)
-        
-        # Transform the start position for each maze orientation
-        self.note_s = [
-            (note_x, note_y),  # Original
-            (self.height - 1 - note_y, note_x),  # 270 degrees clockwise
-            (self.width - 1 - note_x, self.height - 1 - note_y),  # 180 degrees
-            (note_y, self.width - 1 - note_x)  # 90 degrees clockwise
-        ]
+        self.note_rotation = random.randint(0, 360)
 
-        grimreaper_x, grimreaper_y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
-        
-        # Transform the start position for each maze orientation
-        self.grimreaper_s = [
-            (grimreaper_x, grimreaper_y),  # Original
-            (self.height - 1 - grimreaper_y, grimreaper_x),  # 270 degrees clockwise
-            (self.width - 1 - grimreaper_x, self.height - 1 - grimreaper_y),  # 180 degrees
-            (grimreaper_y, self.width - 1 - grimreaper_x)  # 90 degrees clockwise
-        ]
+        grimreaper_x, grimreaper_y = self.random_position(self.width, self.height)
+        self.grimreaper_s = self.generate_orientations(grimreaper_x, grimreaper_y, self.width, self.height)
 
-        spider_x, spider_y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
-        
-        # Transform the start position for each maze orientation
-        self.spider_s = [
-            (spider_x, spider_y),  # Original
-            (self.height - 1 - spider_y, spider_x),  # 270 degrees clockwise
-            (self.width - 1 - spider_x, self.height - 1 - spider_y),  # 180 degrees
-            (spider_y, self.width - 1 - spider_x)  # 90 degrees clockwise
-        ]
+        spider_x, spider_y = self.random_position(self.width, self.height)
+        self.spider_s = self.generate_orientations(spider_x, spider_y, self.width, self.height)
 
-        # Initialize player positions
+        # Initialize positions
         self.end_positions = list(self.end_s)
         self.skeleton_positions = list(self.skeleton_s)
         self.painting_positions = list(self.painting_s)
@@ -211,10 +178,6 @@ class GameWindow():
                 if room['right']:
                     pygame.draw.line(self.screen, self.colors['BLACK'], (room_x + self.cell_size, room_y), 
                                      (room_x + self.cell_size, room_y + self.cell_size), 2)
-                    
-        end_x_pos = self.end_positions[self.current_maze_index][0] * self.cell_size
-        end_y_pos = self.end_positions[self.current_maze_index][1] * self.cell_size
-        # pygame.draw.rect(self.screen, self.colors["GREEN"], (end_x_pos, end_y_pos, self.cell_size, self.cell_size))
 
     def draw_player(self, player_pos):
         """Draw the player as a red circle."""
@@ -231,23 +194,14 @@ class GameWindow():
         self.current_maze_index = 0
         self.maze_size += 1
         self.gamestate = True
-        self.top_wall = False
-        self.bottom_wall = False
-        self.right_wall = False
-        self.left_wall = False
-        self.start = False
-        self.end = False
-        self.skeleton = False
-        self.painting = False
-        self.note = False
-        self.grimreaper = False
-        self.spider = False
+        self.falses()
 
     def fade_out(self, speed=5):
         fade_surface = pygame.Surface(self.screen.get_size())
-        fade_surface.fill((0, 0, 0))  # Black overlay
         if self.grimreaper == True:
-            fade_surface.fill((80, 0, 0))
+            fade_surface.fill((80, 0, 0)) # Red overlay
+        else:
+            fade_surface.fill((0, 0, 0))  # Black overlay
 
         for alpha in range(0, 256, speed):
             self.draw_wall_images()  # Re-render the scene behind the fade
@@ -267,7 +221,7 @@ class GameWindow():
         self.screen.blit(text_surface, (x, y))
     
     def tint_surface(self, surface, tint_color):
-        """ Apply a red tint to a surface """
+        # Apply a red tint to a surface
         tinted = surface.copy()
         tint = pygame.Surface(surface.get_size()).convert_alpha()
         tint.fill(tint_color)
@@ -282,47 +236,40 @@ class GameWindow():
             'skeleton_side_2', 'painting1', 'painting1_side1', 'painting1_side2', 'note', 'grimreaper', 'spider',
             'spider2', 'spider3'
         ]
+        
+        # Special sizes per image name
+        custom_sizes = {
+            'new_start': (150, 80),
+            'new_end': (150, 80),
+            'ladder': (300, 80),
+            'skeleton_front': (500, 1000),
+            'skeleton_back': (110, 300),
+            'skeleton_side_1': (140, 390),
+            'skeleton_side_2': (110, 300),
+            'painting1': (200, 150),
+            'painting1_side1': (400, 225),
+            'painting1_side2': (400, 225),
+            'note': (60, 60),
+            'grimreaper': (250, 500),
+            'spider': (100, 110),
+            'spider2': (300, 330),
+            'spider3': (100, 110),
+        }
+        
+        default_size = (800, 600)
         images = {}
+
         for wall in all_images:
             path = os.path.join("images", "doors", f"{wall}.png")
             try:
                 image = pygame.image.load(path)
-                image = pygame.transform.scale(image, (800, 600))
-                if wall == 'new_start':
-                    image = pygame.transform.scale(image, (150, 80))
-                if wall == 'new_end':
-                    image = pygame.transform.scale(image, (150, 80))
-                if wall == 'ladder':
-                    image = pygame.transform.scale(image, (300, 80))
-                if wall == 'skeleton_front':
-                    image = pygame.transform.scale(image, (500, 1000))
-                if wall == 'skeleton_back':
-                    image = pygame.transform.scale(image, (110, 300))
-                if wall == 'skeleton_side_1':
-                    image = pygame.transform.scale(image, (140, 390))
-                if wall == 'skeleton_side_2':
-                    image = pygame.transform.scale(image, (110, 300))
-                if wall == 'painting1':
-                    image = pygame.transform.scale(image, (200, 150))
-                if wall == 'painting1_side1':
-                    image = pygame.transform.scale(image, (400, 225))
-                if wall == 'painting1_side2':
-                    image = pygame.transform.scale(image, (400, 225))
-                if wall == 'note':
-                    image = pygame.transform.scale(image, (60, 60))
-                if wall == 'grimreaper':
-                    image = pygame.transform.scale(image, (250, 500))
-                if wall == 'spider':
-                    image = pygame.transform.scale(image, (100, 110))
-                if wall == 'spider2':
-                    image = pygame.transform.scale(image, (300, 330))
-                if wall == 'spider3':
-                    image = pygame.transform.scale(image, (100, 110))
-                images[wall] = image 
-                
+                size = custom_sizes.get(wall, default_size)
+                image = pygame.transform.scale(image, size)
+                images[wall] = image
             except pygame.error as e:
                 print(f"Error loading {wall}.png: {e}")
-                images[wall] = None  # Placeholder for missing images
+                images[wall] = None
+
         return images
     
     def draw_wall_images(self):
@@ -359,7 +306,7 @@ class GameWindow():
 
         if self.start:
             start_key = "new_start"
-            start_position = (320, 480)  # Default position
+            start_position = (320, 480)
 
             if start_key in self.images and self.images[start_key]:
                 start_image = self.images[start_key]
@@ -370,15 +317,15 @@ class GameWindow():
                 if self.current_maze_index == 1:
                     start_image = pygame.transform.scale(start_image, (100, 80))
                     start_image = pygame.transform.rotate(start_image, 270)
-                    start_position = (350, 480)  # Default position
+                    start_position = (350, 480) 
                 if self.current_maze_index == 3:
                     start_image = pygame.transform.scale(start_image, (100, 80))
                     start_image = pygame.transform.rotate(start_image, 90)
-                    start_position = (350, 480)  # Default position
+                    start_position = (350, 480) 
                 self.screen.blit(start_image, start_position)
 
         if self.end:
-            end_position = (320, 480)  # You can set this to any position you want
+            end_position = (320, 480)
             end_key = "new_end"
             if end_key in self.images and self.images[end_key]:
                 self.screen.blit(self.images[end_key], end_position)  
@@ -391,13 +338,13 @@ class GameWindow():
                     painting_key = "painting1"
                     painting_position = (300, 200)
                 if self.current_maze_index == 2:
-                    painting_position = (800, 800)  # You can set this to any position you want
+                    painting_position = (800, 800)  
                     painting_key = "painting1"
                 if self.current_maze_index == 1 and self.left_wall:
-                    painting_position = (500, 200)  # You can set this to any position you want
+                    painting_position = (500, 200)
                     painting_key = "painting1_side2"
                 if self.current_maze_index == 3 and self.right_wall:
-                    painting_position = (-100, 200)  # You can set this to any position you want
+                    painting_position = (-100, 200) 
                     painting_key = "painting1_side1"
                 self.screen.blit(self.images[painting_key], painting_position) 
                 
@@ -414,13 +361,13 @@ class GameWindow():
             skeleton_position = (240, 170)
             if skeleton_key in self.images and self.images[skeleton_key]:
                 if self.current_maze_index == 2 or (self.current_maze_index == 1 and self.left_wall and self.right_wall):
-                    skeleton_position = (300, 170)  # You can set this to any position you want
+                    skeleton_position = (300, 170)  
                     skeleton_key = "skeleton_back"
                 if self.current_maze_index == 1 and not (self.left_wall and self.right_wall):
-                    skeleton_position = (170, 170)  # You can set this to any position you want
+                    skeleton_position = (170, 170)  
                     skeleton_key = "skeleton_side_1"
                 if self.current_maze_index == 3 and not (self.left_wall and self.right_wall):
-                    skeleton_position = (500, 190)  # You can set this to any position you want
+                    skeleton_position = (500, 190) 
                     skeleton_key = "skeleton_side_2"
                 self.screen.blit(self.images[skeleton_key], skeleton_position)                  
         
@@ -432,8 +379,11 @@ class GameWindow():
     
         if self.spider:
             spider_key = "spider"
-            spider_position = (230, 100)
+            spider_position = (self.screen_width, self.screen_height)
             if spider_key in self.images and self.images[spider_key]:
+                if self.current_maze_index == 0 and not (self.left_wall and self.right_wall):
+                    spider_position = (230, 100)
+                    spider_key = "spider"
                 if self.current_maze_index == 2:
                     spider_position = (self.screen_width, self.screen_height)  # You can set this to any position you want
                     spider_key = "spider"
@@ -448,7 +398,6 @@ class GameWindow():
     def toggle_minimap(self):
         self.minimap = not self.minimap
 
-    # Add this method to handle mouse click actions
     def handle_click(self, mouse_pos):      
         # Define areas for left, straight, and right doors based on the screen position
         left_area = (0, self.screen_width // 3)  # Left door
@@ -576,18 +525,7 @@ class GameWindow():
                     ]
 
     def handle_key_movement(self, event_key):
-        self.start = False
-        self.end = False
-        self.skeleton = False
-        self.painting = False
-        self.note = False
-        self.grimreaper = False
-        self.spider = False
-        # Move player with arrow keys
-        self.top_wall = False
-        self.bottom_wall = False
-        self.right_wall = False
-        self.left_wall = False
+        self.falses()
         if event_key == pygame.K_UP and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
             self.total_position += 0
             if self.current_maze_index == 0:
@@ -708,7 +646,7 @@ class GameWindow():
                     self.player_total_points += 1
                     self.next_game()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:  # Left mouse button
+                    if event.button == 1:
                         mouse_pos = event.pos
                         self.handle_click(mouse_pos)
                 elif event.type == pygame.KEYDOWN:
@@ -718,6 +656,7 @@ class GameWindow():
             if self.gamestate:
                 time_elapsed += self.dt
 
+                # Determine current maze index
                 if self.total_position % 4 == 0 or self.total_position == 0:
                     self.current_maze_index = 0
                 elif self.total_position % 2 == 0:
@@ -727,6 +666,7 @@ class GameWindow():
                 elif self.total_position % 4 == 1 or self.total_position == 1:
                     self.current_maze_index = 3
 
+                # Determine walls
                 if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
                     self.top_wall = True
                 if self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['bottom']:
@@ -743,8 +683,8 @@ class GameWindow():
                 # Check if the player reached the end
                 if self.player_positions[self.current_maze_index] == self.end_positions[self.current_maze_index]:
                     self.end = True
-                    # self.gamestate = False  # End the game if player reaches the end room
 
+                # Check for other events in the maze
                 if self.player_positions[self.current_maze_index] == self.skeleton_positions[self.current_maze_index] \
                 and not self.start and not self.end:
                     self.skeleton = True
@@ -776,8 +716,8 @@ class GameWindow():
                     self.draw_maze(self.mazes[self.current_maze_index])
                     self.draw_player(self.player_positions[self.current_maze_index])
                 
-                self.player_points = f'{int(self.player_total_points)}'
-                self.draw_text(self.player_points, self.screen_width - 200, self.screen_height // 10, self.colors["BLACK"])
+                # self.player_points = f'{int(self.player_total_points)}'
+                # self.draw_text(self.player_points, self.screen_width - 200, self.screen_height // 10, self.colors["BLACK"])
                 
             else:
                 self.screen.fill(self.colors["GREY"])

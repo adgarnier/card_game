@@ -42,7 +42,7 @@ class GameWindow:
 
     def load_dictionary(self):
         # Load the dictionary from the file
-        with open(os.path.join("dictionary", "filtered.json"), "r") as file:
+        with open(os.path.join("jsons", "dictionary.json"), "r") as file:
             self.dictionary = json.load(file)
 
     def reset_game(self):
@@ -107,10 +107,10 @@ class GameWindow:
                     if option == self.word:
                         self.selected_status[option] = "correct"
                         self.player_total_points += 1
-                        self.feedback = f"Correct! The word was: {self.word}"
+                        self.feedback = f"Correct! {self.word}"
                     else:
                         self.selected_status[option] = "incorrect"
-                        self.feedback = f"Wrong! The word was: {self.word}"
+                        self.feedback = f"Wrong! {self.word}"
                     self.feedback_timer = pygame.time.get_ticks()
 
     def main(self):
@@ -127,14 +127,19 @@ class GameWindow:
                         self.next_round()
                         self.feedback = ""
                     elif event.key in [pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4, pygame.K_5, pygame.K_6]:
-                        selected_option = self.options[event.key - pygame.K_1]
-                        if selected_option == self.word:
-                            self.player_total_points += 1
-                            self.feedback = f"Correct! The word was: {self.word}"
-                            print(self.player_total_points)
-                        else:
-                            self.feedback = f"Wrong! The word was: {self.word}"
-                        self.feedback_timer = pygame.time.get_ticks()
+                        index = event.key - pygame.K_1
+                        if index < len(self.options):
+                            selected_option = self.options[index]
+                            if self.selected_status[selected_option] is None:  # Only proceed if not already selected
+                                if selected_option == self.word:
+                                    self.selected_status[selected_option] = "correct"
+                                    self.player_total_points += 1
+                                    self.feedback = f"Correct! {self.word}"
+                                    print(self.player_total_points)
+                                else:
+                                    self.selected_status[selected_option] = "incorrect"
+                                    self.feedback = f"Wrong! {self.word}"
+                                self.feedback_timer = pygame.time.get_ticks()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.check_click(event.pos)
 
