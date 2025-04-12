@@ -393,7 +393,7 @@ class GameWindow():
             skeleton_key = "skeleton_front"
             skeleton_position = (240, 170)
             if skeleton_key in self.images and self.images[skeleton_key]:
-                if self.current_maze_index == 2:
+                if self.current_maze_index == 2 or (self.current_maze_index == 1 and not (self.left_wall and self.right_wall)):
                     skeleton_position = (300, 170)  # You can set this to any position you want
                     skeleton_key = "skeleton_back"
                 if self.current_maze_index == 1 and not (self.left_wall and self.right_wall):
