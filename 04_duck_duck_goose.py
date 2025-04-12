@@ -31,7 +31,7 @@ class GameWindow():
         selected_birds = random.sample(all_birds, self.bird_amount)  # Randomly select 5 birds
         images = {}
         for bird in selected_birds:
-            path = os.path.join("birds", f"{bird}.png")
+            path = os.path.join("images", "birds", f"{bird}.png")
             try:
                 image = pygame.image.load(path)
                 images[bird] = image 
@@ -42,7 +42,7 @@ class GameWindow():
 
     def load_bg_images(self, mouse_x, mouse_y):
         try:
-            gun = pygame.image.load(os.path.join("background", "gun.png"))
+            gun = pygame.image.load(os.path.join("images", "background", "gun.png"))
             new_height = 200
             aspect_ratio = gun.get_width() / gun.get_height()
             new_width = int(new_height * aspect_ratio)
@@ -55,7 +55,7 @@ class GameWindow():
             
     def load_bg(self):
         try:
-            bg = pygame.image.load(os.path.join("background", "skywithtrees.jpg"))
+            bg = pygame.image.load(os.path.join("images", "background", "skywithtrees.jpg"))
             bg = pygame.transform.scale(bg, (self.screen_width, self.screen_height))  # Ensure full-screen fit
             self.screen.blit(bg, (0, 0))  # Draw background at the top-left corner
         except pygame.error as e:

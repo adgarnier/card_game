@@ -60,8 +60,8 @@ class GameWindow:
         self.drawn_card = None
 
         # Load card images
-        self.card_images = self.load_card_images('playing-cards-master')   
-        self.other_images = self.load_other_images('playing-cards-master')
+        self.card_images = self.load_card_images('images/playing-cards-master')   
+        self.other_images = self.load_other_images('images/playing-cards-master')
 
         # Game lists
         self.starting_points = 1000000     

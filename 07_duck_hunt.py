@@ -48,7 +48,7 @@ class GameWindow():
         selected_birds = random.sample(all_birds, self.bird_amount)
         images = {}
         for bird in selected_birds:
-            path = os.path.join("birds", f"{bird}.png")
+            path = os.path.join("images", "birds", f"{bird}.png")
             try:
                 image = pygame.image.load(path)
                 images[bird] = image 
@@ -100,7 +100,7 @@ class GameWindow():
             bg_name = random.choice([
                 "city.jpg", "city2.jpg", "city3.jpg", "city4.jpg", "city5.jpg", "city6.jpg",
                 "city7.jpg", "city8.jpg", "city9.jpg", "city10.jpg", "city11.jpg"])
-            bg_path = os.path.join("background", bg_name)
+            bg_path = os.path.join("images", "background", bg_name)
             bg = pygame.image.load(bg_path).convert()
             print(f"Loaded background: {bg_name}")
             return bg
@@ -109,7 +109,7 @@ class GameWindow():
             return pygame.Surface((self.screen_width, self.screen_height))  # Fallback
 
     def next_round(self):
-        if self.player_total_points % 3 == 0:
+        if self.player_total_points % 3 == 0 and self.bird_height > 10:
             self.bird_height = int(self.bird_height * 0.5)
         print(self.bird_height)
         self.bg_image = self.load_large_bg()

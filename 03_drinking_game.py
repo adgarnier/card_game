@@ -31,7 +31,7 @@ class GameWindow():
         self.font = pygame.font.SysFont(None, 55)
         self.dt = 0
 
-        self.beer_images = self.load_beer_images('beers')
+        self.beer_images = self.load_beer_images('images/beers')
         self.selected_beer_images = []
         
         # Initialize selected hat
@@ -50,10 +50,10 @@ class GameWindow():
         self.selected_beer_images = self.select_unique_random_beer_images()
 
         # Pick a hat once per game
-        hat_images = [f for f in os.listdir("fishhats") if f.endswith(".png")]
+        hat_images = [f for f in os.listdir("images/fishhats") if f.endswith(".png")]
         if hat_images:
             random_hat = random.choice(hat_images)
-            self.selected_hat = pygame.image.load(os.path.join("fishhats", random_hat))
+            self.selected_hat = pygame.image.load(os.path.join("images/fishhats", random_hat))
             self.selected_hat = pygame.transform.scale(self.selected_hat, (150, 150))  # Resize if needed
 
         # Pattern game specific

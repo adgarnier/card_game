@@ -36,6 +36,7 @@ class GameWindow():
         self.painting = False
         self.note = False
         self.grimreaper = False
+        self.spider = False
         
     def maze_setup(self):
         # Maze setup
@@ -116,12 +117,23 @@ class GameWindow():
             (grimreaper_y, self.width - 1 - grimreaper_x)  # 90 degrees clockwise
         ]
 
+        spider_x, spider_y = random.randint(0, self.width - 1), random.randint(0, self.height - 1)
+        
+        # Transform the start position for each maze orientation
+        self.spider_s = [
+            (spider_x, spider_y),  # Original
+            (self.height - 1 - spider_y, spider_x),  # 270 degrees clockwise
+            (self.width - 1 - spider_x, self.height - 1 - spider_y),  # 180 degrees
+            (spider_y, self.width - 1 - spider_x)  # 90 degrees clockwise
+        ]
+
         # Initialize player positions
         self.end_positions = list(self.end_s)
         self.skeleton_positions = list(self.skeleton_s)
         self.painting_positions = list(self.painting_s)
         self.note_positions = list(self.note_s)
         self.grimreaper_positions = list(self.grimreaper_s)
+        self.spider_positions = list(self.spider_s)
         self.player_positions = list(self.start_positions)
 
     def rotate_maze(self, maze):
@@ -229,10 +241,13 @@ class GameWindow():
         self.painting = False
         self.note = False
         self.grimreaper = False
+        self.spider = False
 
     def fade_out(self, speed=5):
         fade_surface = pygame.Surface(self.screen.get_size())
         fade_surface.fill((0, 0, 0))  # Black overlay
+        if self.grimreaper == True:
+            fade_surface.fill((80, 0, 0))
 
         for alpha in range(0, 256, speed):
             self.draw_wall_images()  # Re-render the scene behind the fade
@@ -264,11 +279,12 @@ class GameWindow():
             'new_start', 'new_left', 'new_left_right', 'new_left_straight', 'new_left_straight_right', 
             'new_none_dark', 'new_right', 'new_straight_close', 'new_straight_long', 'new_straight_long_2', 
             'new_straight_right', 'new_end', 'ladder', 'skeleton_front', 'skeleton_back', 'skeleton_side_1',
-            'skeleton_side_2', 'painting1', 'painting1_side1', 'painting1_side2', 'note', 'grimreaper'
+            'skeleton_side_2', 'painting1', 'painting1_side1', 'painting1_side2', 'note', 'grimreaper', 'spider',
+            'spider2', 'spider3'
         ]
         images = {}
         for wall in all_images:
-            path = os.path.join("doors", f"{wall}.png")
+            path = os.path.join("images", "doors", f"{wall}.png")
             try:
                 image = pygame.image.load(path)
                 image = pygame.transform.scale(image, (800, 600))
@@ -295,9 +311,13 @@ class GameWindow():
                 if wall == 'note':
                     image = pygame.transform.scale(image, (60, 60))
                 if wall == 'grimreaper':
-                    image = pygame.transform.scale(image, (300, 600))
                     image = pygame.transform.scale(image, (250, 500))
-
+                if wall == 'spider':
+                    image = pygame.transform.scale(image, (100, 110))
+                if wall == 'spider2':
+                    image = pygame.transform.scale(image, (300, 330))
+                if wall == 'spider3':
+                    image = pygame.transform.scale(image, (100, 110))
                 images[wall] = image 
                 
             except pygame.error as e:
@@ -393,7 +413,7 @@ class GameWindow():
             skeleton_key = "skeleton_front"
             skeleton_position = (240, 170)
             if skeleton_key in self.images and self.images[skeleton_key]:
-                if self.current_maze_index == 2 or (self.current_maze_index == 1 and not (self.left_wall and self.right_wall)):
+                if self.current_maze_index == 2 or (self.current_maze_index == 1 and self.left_wall and self.right_wall):
                     skeleton_position = (300, 170)  # You can set this to any position you want
                     skeleton_key = "skeleton_back"
                 if self.current_maze_index == 1 and not (self.left_wall and self.right_wall):
@@ -404,12 +424,26 @@ class GameWindow():
                     skeleton_key = "skeleton_side_2"
                 self.screen.blit(self.images[skeleton_key], skeleton_position)                  
         
-        # if self.bottom_wall or not self.bottom_wall:
         if self.grimreaper:
             grimreaper_key = "grimreaper"
             grimreaper_position = (280, 130)
             if grimreaper_key in self.images and self.images[grimreaper_key]:
                 self.screen.blit(self.images[grimreaper_key], grimreaper_position)
+    
+        if self.spider:
+            spider_key = "spider"
+            spider_position = (230, 100)
+            if spider_key in self.images and self.images[spider_key]:
+                if self.current_maze_index == 2:
+                    spider_position = (self.screen_width, self.screen_height)  # You can set this to any position you want
+                    spider_key = "spider"
+                if self.current_maze_index == 1 and not (self.left_wall and self.right_wall):
+                    spider_position = (550, 110)  # You can set this to any position you want
+                    spider_key = "spider3"
+                if self.current_maze_index == 3 and not (self.left_wall and self.right_wall):
+                    spider_position = (-150, -150)  # You can set this to any position you want
+                    spider_key = "spider2"
+                self.screen.blit(self.images[spider_key], spider_position)
     
     def toggle_minimap(self):
         self.minimap = not self.minimap
@@ -548,6 +582,7 @@ class GameWindow():
         self.painting = False
         self.note = False
         self.grimreaper = False
+        self.spider = False
         # Move player with arrow keys
         self.top_wall = False
         self.bottom_wall = False
@@ -726,6 +761,11 @@ class GameWindow():
                 and not self.start and not self.end and not self.skeleton and not self.note and not self.painting \
                 and self.top_wall and self.right_wall and self.left_wall and self.player_total_points > 0:
                     self.grimreaper = True
+                    self.fade_out()
+                    self.gamestate = False
+
+                if self.player_positions[self.current_maze_index] == self.spider_positions[self.current_maze_index]:
+                    self.spider = True
 
                 self.draw_wall_images()
 
