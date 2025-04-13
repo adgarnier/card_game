@@ -23,29 +23,34 @@ class CEOSimulator:
         self.font = pygame.font.SysFont(None, 40)
         self.small_font = pygame.font.SysFont(None, 30)
 
-        self.click = True
-        self.load_scenarios()
-
-        # Player stats
-        self.money = 100
-        self.reputation = 50
-        self.morale = 50
-
-        self.feedback = ""
-        self.feedback_timer = 0
-        self.option_rects = []
-        self.scenarios_seen = []
-
-        self.next_scenario()
+        self.reset()
 
     def load_scenarios(self):
         with open(os.path.join("jsons", "ceo_scenarios.json"), "r") as file:
             self.scenarios = json.load(file)
 
+    def reset(self):
+        self.click = True
+        self.load_scenarios()
+        self.money = 100
+        self.reputation = 50
+        self.morale = 50
+        self.feedback = ""
+        self.feedback_timer = 0
+        self.option_rects = []
+        self.scenarios_seen = set()
+        self.next_scenario()
+
     def next_scenario(self):
-        previous_scenario = getattr(self, 'previous_scenario', None)
-        self.previous_scenario = random.choice([s for s in self.scenarios if s != previous_scenario])
-        self.current = self.previous_scenario
+        if len(self.scenarios_seen) == len(self.scenarios):
+            self.scenarios_seen.clear()  # Reset when all have been shown
+
+        available_indexes = [i for i in range(len(self.scenarios)) if i not in self.scenarios_seen]
+        chosen_index = random.choice(available_indexes)
+
+        self.scenarios_seen.add(chosen_index)
+        self.current = self.scenarios[chosen_index]
+
         self.feedback = ""
         self.feedback_timer = 0
         self.option_rects = []
@@ -100,8 +105,21 @@ class CEOSimulator:
 
     def game_over(self, message):
         self.screen.fill(self.GREY)
-        self.draw_text(message, 250, 250, self.font, self.RED)
+        self.draw_text(message, self.screen_width // 5, self.screen_height // 2, self.font, self.RED) 
         pygame.display.flip()
+
+    def game_type(self, type):
+        self.types = type
+        if type == "Narcissist":
+            print("N")
+        if type == "Capitalist":
+            print("capitalism rules")
+        if type == "Socialist":
+            
+        
+    narcissist
+    capitalist
+    socialist
 
     def main(self):
         clock = pygame.time.Clock()
@@ -113,6 +131,17 @@ class CEOSimulator:
                     running = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.check_click(event.pos)
+                elif event.type ==pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.reset()
+                    if event.key == pygame.K_1:
+                        self.game_type("Capitalist")
+                    if event.key == pygame.K_2:
+                        self.game_type("Narcissist")
+                    if event.key == pygame.K_3:
+                        self.game_type("Socialist")
+                    if event.key == pygame.K_4:
+                        self.game_type("Idealist")
 
             self.screen.fill(self.GREY)
             self.draw_stats()
