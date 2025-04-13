@@ -64,7 +64,7 @@
     },
     {
       "id": "8",
-      "scenario": "You’re invited to speak at a controversial tech conference.",
+      "scenario": "You're invited to speak at a controversial tech conference.",
       "choices": [
         { "text": "Attend and speak", "effects": { "money": 0, "reputation": -10, "morale": -5 }, "feedback": "Backlash from employees and public." },
         { "text": "Decline respectfully", "effects": { "money": 0, "reputation": 10, "morale": 5 }, "feedback": "You avoid controversy." },
@@ -138,7 +138,7 @@
       "id": "16",
       "scenario": "Your COO wants to launch a risky international expansion.",
       "choices": [
-        { "text": "Back the expansion", "effects": { "money": -30, "reputation": 15, "morale": 10 }, "feedback": "The move impresses markets—if it works." },
+        { "text": "Back the expansion", "effects": { "money": -30, "reputation": 15, "morale": 10 }, "feedback": "The move impresses markets, if it works." },
         { "text": "Delay until next quarter", "effects": { "money": -5, "reputation": 0, "morale": 0 }, "feedback": "Cautious approach buys time." },
         { "text": "Reject the plan", "effects": { "money": 0, "reputation": -10, "morale": -5 }, "feedback": "You lose bold leadership points." }
       ]
@@ -147,14 +147,14 @@
       "id": "17",
       "scenario": "You find out your competitor is stealing your ad copy.",
       "choices": [
-        { "text": "Sue them", "effects": { "money": -15, "reputation": 10, "morale": 5 }, "feedback": "You’re seen defending your brand." },
+        { "text": "Sue them", "effects": { "money": -15, "reputation": 10, "morale": 5 }, "feedback": "You're seen defending your brand." },
         { "text": "Send a cease-and-desist", "effects": { "money": -5, "reputation": 5, "morale": 0 }, "feedback": "A formal warning may work." },
         { "text": "Do nothing", "effects": { "money": 0, "reputation": -10, "morale": -2 }, "feedback": "Your brand appears weak." }
       ]
     },
     {
       "id": "18",
-      "scenario": "Your company mascot goes viral—for the wrong reasons.",
+      "scenario": "Your company mascot goes viral for the wrong reasons.",
       "choices": [
         { "text": "Embrace the meme", "effects": { "money": 10, "reputation": 10, "morale": 10 }, "feedback": "Smart marketing turns it around." },
         { "text": "Silently remove the mascot", "effects": { "money": -5, "reputation": -5, "morale": 0 }, "feedback": "Mixed reactions from fans." },
@@ -248,7 +248,7 @@
         "choices": [
           {"text": "Invest in R&D immediately","effects": { "money": -20, "reputation": 10, "morale": 5 },"feedback": "A bold move toward innovation."},
           {"text": "Buy a smaller competitor with a new product","effects": { "money": -10, "reputation": 5, "morale": 0 },"feedback": "You gain new tech quickly."},
-          {"text": "Try to extend the product’s life","effects": { "money": -5, "reputation": -10, "morale": -5 },"feedback": "It feels like clinging to the past."}
+          {"text": "Try to extend the product's life","effects": { "money": -5, "reputation": -10, "morale": -5 },"feedback": "It feels like clinging to the past."}
         ]
     },
     {
@@ -268,6 +268,96 @@
           {"text": "Keep it proprietary","effects": { "money": 5, "reputation": -5, "morale": -2 },"feedback": "You miss out on goodwill."},
           {"text": "Release a limited version","effects": { "money": -2, "reputation": 10, "morale": 5 },"feedback": "You find a nice balance."}
         ]
+    },
+    {
+      "id": "31",
+      "scenario": "A former employee starts a successful podcast and offers to feature your company.",
+      "choices": [
+        {"text": "Accept and give them insider stories.","effects": {"reputation": 10},"feedback": "The episode goes viral. Great PR!"},
+        {"text": "Politely decline but support their work.","effects": {"reputation": 5},"feedback": "They mention you anyway, in a good light."},
+        {"text": "Pay them to promote your brand heavily.","effects": {"money": -5, "reputation": 15},"feedback": "It’s a hit campaign. Worth the investment."}
+      ]
+    },
+    {
+      "id": "32",
+      "scenario": "An intern creates a tool that saves everyone time.",
+      "choices": [
+        {"text": "Praise and promote the intern.","effects": {"morale": 10, "reputation": 5},"feedback": "Your team feels inspired and loyal."},
+        {"text": "Reward the intern with a bonus.","effects": {"money": -5, "morale": 15},"feedback": "Everyone appreciates the recognition culture."},
+        {"text": "Quietly implement the tool and move on.","effects": {"money": 5},"feedback": "Efficiency increases, but morale gain is missed."}
+      ]
+    },
+    {
+      "id": "33",
+      "scenario": "You are invited to speak at an industry conference.",
+      "choices": [
+        {"text": "Deliver an inspiring talk.","effects": {"reputation": 15},"feedback": "Your message spreads across the industry."},
+        {"text": "Send your CTO instead.","effects": {"reputation": 10, "morale": 5},"feedback": "The team feels trusted and proud."},
+        {"text": "Sponsor the event instead.","effects": {"money": -5, "reputation": 10},"feedback": "Good exposure without needing to speak."}
+      ]
+    },
+    {
+      "id": "34",
+      "scenario": "A local government offers tax breaks for tech training programs.",
+      "choices": [
+        {"text": "Enroll your whole team.","effects": {"morale": 10, "money": 10},"feedback": "Everyone levels up — and you save cash."},
+        {"text": "Send key staff only.","effects": {"money": 5, "morale": 5},"feedback": "Targeted training pays off quickly."},
+        {"text": "Decline — you already train internally.","effects": {"morale": 2},"feedback": "The team respects your confidence."}
+      ]
+    },
+    {
+      "id": "35",
+      "scenario": "A celebrity uses your product and tweets about it.",
+      "choices": [
+        {"text": "Publicly thank them and offer a free gift.","effects": {"reputation": 15},"feedback": "The post goes viral. Sales spike."},
+        {"text": "Quietly boost ads around the tweet.","effects": {"money": -5, "reputation": 10},"feedback": "Smart marketing move — solid gains."},
+        {"text": "Ignore it, stay humble.","effects": {"reputation": 5},"feedback": "People admire your quiet confidence."}
+      ]
+    },
+    {
+      "id": "36",
+      "scenario": "A national award opens applications for innovative startups.",
+      "choices": [
+        {"text": "Apply with a killer pitch.","effects": {"reputation": 15, "money": 5},"feedback": "You win! Investors take notice."},
+        {"text": "Nominate another rising startup.","effects": {"reputation": 10},"feedback": "Your generosity is widely praised."},
+        {"text": "Skip it — you’re already known.","effects": {"morale": 5},"feedback": "Your team admires the quiet focus."}
+      ]
+    },
+    {
+      "id": "37",
+      "scenario": "An employee suggests a wellness week with fun activities.",
+      "choices": [
+        {"text": "Implement it fully.","effects": {"morale": 15},"feedback": "Everyone returns recharged and loyal."},
+        {"text": "Try a one-day event.","effects": {"morale": 7},"feedback": "A good start. Spirits lift."},
+        {"text": "Offer gym discounts instead.","effects": {"morale": 5, "money": -3},"feedback": "Some use it, others appreciate the gesture."}
+      ]
+    },
+    {
+      "id": "38",
+      "scenario": "A major client wants to sign a long-term contract.",
+      "choices": [
+        {"text": "Lock in the deal immediately.","effects": {"money": 15},"feedback": "It’s a windfall — your finances are strong."},
+        {"text": "Negotiate for more perks.","effects": {"money": 10},"feedback": "You get a better deal. Bold move."},
+        {"text": "Refer them to a partner company.","effects": {"reputation": 10},"feedback": "Your goodwill enhances your brand."}
+      ]
+    },
+    {
+      "id": "39",
+      "scenario": "Your team finishes a project ahead of schedule.",
+      "choices": [
+        {"text": "Host a celebration.","effects": {"morale": 15, "money": -5},"feedback": "Everyone feels appreciated and motivated."},
+        {"text": "Give everyone a surprise day off.","effects": {"morale": 10},"feedback": "A rare gift. Staff morale skyrockets."},
+        {"text": "Roll right into the next project.","effects": {"money": 5, "morale": -2},"feedback": "Momentum continues, but some grumble."}
+      ]
+    },
+    {
+      "id": "40",
+      "scenario": "A nonprofit asks to collaborate on a social impact project.",
+      "choices": [
+        {"text": "Partner and co-develop the campaign.","effects": {"reputation": 15, "morale": 5},"feedback": "It’s great PR and feels meaningful."},
+        {"text": "Donate money instead of time.","effects": {"money": -5, "reputation": 10},"feedback": "Still helpful — the public appreciates your support."},
+        {"text": "Offer technical support only.","effects": {"reputation": 5},"feedback": "Not flashy, but useful and sincere."}
+      ]
     }
 ]
     

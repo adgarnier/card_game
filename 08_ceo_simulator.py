@@ -23,7 +23,39 @@ class CEOSimulator:
         self.font = pygame.font.SysFont(None, 40)
         self.small_font = pygame.font.SysFont(None, 30)
 
+        self.money_high = 1000
+        self.reputation_high = 1000
+        self.morale_high = 1000
+
         self.reset()
+
+    def startup_screen(self):
+        selecting = True
+        while selecting:
+            self.screen.fill(self.GREY)
+            self.draw_text("Choose Your CEO Type", 200, 100, self.font, self.BLACK)
+
+            types = ["Capitalist", "Narcissist", "Socialist", "Idealist"]
+            buttons = []
+
+            for i, ceo_type in enumerate(types):
+                rect = pygame.Rect(250, 180 + i * 80, 300, 50)
+                pygame.draw.rect(self.screen, self.BLUE, rect)
+                self.draw_text(ceo_type, rect.x + 20, rect.y + 10, self.small_font, self.WHITE)
+                buttons.append((rect, ceo_type))
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    for rect, ceo_type in buttons:
+                        if rect.collidepoint(event.pos):
+                            self.reset()
+                            self.game_type(ceo_type)
+                            selecting = False
+
+            pygame.display.flip()
 
     def load_scenarios(self):
         with open(os.path.join("jsons", "ceo_scenarios.json"), "r") as file:
@@ -31,8 +63,10 @@ class CEOSimulator:
 
     def reset(self):
         self.click = True
+        self.type = ""
+        self.penalty_message = ""
         self.load_scenarios()
-        self.money = 100
+        self.money = 50
         self.reputation = 50
         self.morale = 50
         self.feedback = ""
@@ -52,6 +86,7 @@ class CEOSimulator:
         self.current = self.scenarios[chosen_index]
 
         self.feedback = ""
+        self.penalty_message = ""
         self.feedback_timer = 0
         self.option_rects = []
         self.click = True
@@ -79,6 +114,46 @@ class CEOSimulator:
         self.reputation += effects.get("reputation", 0)
         self.morale += effects.get("morale", 0)
 
+        # Set limits
+        if self.type == "Capitalist":
+            if self.reputation > self.reputation_high and self.morale > self.morale_high:
+                self.money -= 10
+                self.penalty_message = "The goal is money (-10 Money)"
+            elif self.reputation > self.reputation_high:
+                self.money -= 5
+                self.penalty_message = "Too much reputation, not enough money (-5 Money)"
+            elif self.morale > self.morale_high:
+                self.money -= 5
+                self.penalty_message = "Employee are not your priority, focus up (-5 Money)"
+        if self.type == "Narcissist":
+            if self.money > self.money_high and self.morale > self.morale_high:
+                self.reputation -= 10
+                self.penalty_message = "Think more about yourself (-10 Reputation)"
+            elif self.money > self.money_high:
+                self.reputation -= 5
+                self.penalty_message = "You are punished for your greed (-5 Reputation)"    
+            elif self.morale > self.morale_high:
+                self.reputation -= 5
+                self.penalty_message = "Employees have it too good (-5 Reputation)"
+        if self.type == "Socialist":
+            if self.money > self.money_high and self.reputation > self.reputation_high:
+                self.morale -= 10
+                self.penalty_message = "Employees are your top priority (-10 Morale)"
+            elif self.money > self.money_high:
+                self.morale -= 5
+                self.penalty_message = "Greed is the enemy (-5 Morale)"
+            elif self.reputation > self.reputation_high:
+                self.morale -= 5
+                self.penalty_message = "Unnecessary reputation holds you back (-5 Morale)"
+        if self.type == "Idealist":
+            if not (abs(self.money - self.reputation) <= 20 and 
+                    abs(self.reputation - self.morale) <= 20 and 
+                    abs(self.money - self.morale) <= 20):
+                self.money -= 5
+                self.reputation -= 5
+                self.morale -= 5
+                self.penalty_message = "All should be equal (-5 all)"
+
         # Clamp values
         self.money = max(0, self.money)
         self.reputation = max(0, min(100, self.reputation))
@@ -93,14 +168,28 @@ class CEOSimulator:
                 return
 
     def draw_stats(self):
-        self.draw_text(f"Money: {self.money}", 20, 20, self.small_font, self.BLACK)
-        self.draw_text(f"Reputation: {self.reputation}", 20, 50, self.small_font, self.BLACK)
-        self.draw_text(f"Morale: {self.morale}", 20, 80, self.small_font, self.BLACK)
+        color_money = self.BLACK
+        color_reputation = self.BLACK
+        color_morale = self.BLACK
+        if self.money >= self.money_high:
+            color_money = self.RED
+        if self.reputation >= self.reputation_high:
+            color_reputation = self.RED
+        if self.morale >= self.morale_high:
+            color_morale = self.RED
+            
+        self.draw_text(f"Money: {self.money}", 20, 20, self.small_font, color_money)
+        self.draw_text(f"Reputation: {self.reputation}", 20, 50, self.small_font, color_reputation)
+        self.draw_text(f"Morale: {self.morale}", 20, 80, self.small_font, color_morale)
 
     def check_game_over(self):
         if self.money <= 0 or self.reputation <= 0 or self.morale <= 0:
             self.game_over("You have lost the game!")
-        elif self.money >= 1000:  # Or any victory condition
+        elif (self.type == "Capitalist" and self.money >= 150)\
+        or (self.type == "Narcissist" and self.reputation >= 150)\
+        or (self.type == "Socialist" and self.morale >= 150)\
+        or (self.type == "Idealist" and self.money >= 150 and self.reputation >= 150 and self.morale >= 150)\
+        or (self.type == "" and self.money >= 100):
             self.game_over("Congratulations, you've won!")
 
     def game_over(self, message):
@@ -109,19 +198,21 @@ class CEOSimulator:
         pygame.display.flip()
 
     def game_type(self, type):
-        self.types = type
-        if type == "Narcissist":
-            print("N")
-        if type == "Capitalist":
-            print("capitalism rules")
-        if type == "Socialist":
-            
-        
-    narcissist
-    capitalist
-    socialist
+        self.type = type
+        if self.type == "Capitalist":
+            self.reputation_high = 70
+            self.morale_high = 55
+        elif self.type == "Narcissist":
+            self.money_high = 60
+            self.morale_high = 60
+        elif self.type == "Socialist":
+            self.money_high = 55
+            self.reputation_high = 70
+        elif self.type == "Idealist":
+            return
 
     def main(self):
+        self.startup_screen()
         clock = pygame.time.Clock()
         running = True
 
@@ -134,14 +225,7 @@ class CEOSimulator:
                 elif event.type ==pygame.KEYDOWN:
                     if event.key == pygame.K_r:
                         self.reset()
-                    if event.key == pygame.K_1:
-                        self.game_type("Capitalist")
-                    if event.key == pygame.K_2:
-                        self.game_type("Narcissist")
-                    if event.key == pygame.K_3:
-                        self.game_type("Socialist")
-                    if event.key == pygame.K_4:
-                        self.game_type("Idealist")
+                        self.startup_screen()   
 
             self.screen.fill(self.GREY)
             self.draw_stats()
@@ -158,11 +242,14 @@ class CEOSimulator:
 
             if self.feedback:
                 self.click = False
-                feedback_color = self.GREEN if "bold" not in self.feedback else self.RED
+                feedback_color = self.GREEN
                 pygame.draw.rect(self.screen, self.GREY, (50, 480, self.screen_width - 100, 100))
                 self.draw_text(self.feedback, 50, 500, self.font, feedback_color)
-                if pygame.time.get_ticks() - self.feedback_timer > 1000:
+                self.draw_text(self.penalty_message, 50, 550, self.font, self.RED)
+                if pygame.time.get_ticks() - self.feedback_timer > 2000:
                     self.next_scenario()
+
+            self.draw_text(self.type, self.screen_width - 200, self.screen_height // 10, self.small_font, self.BLACK) 
 
             self.check_game_over()
 
