@@ -44,6 +44,7 @@ class GameWindow():
     def reset_game(self):
         # Resets the game state
         self.player_total_points = 0
+        self.speed_max = 1400
         self.gamestate = True
 
         # Reset selected beer images
@@ -76,6 +77,17 @@ class GameWindow():
                 print(f'Warning: Image not found for {image}')  # Fix: More descriptive warning
         return beer_images  # Fix: Move return outside the loop
 
+    def load_bg(self):
+        try:
+            bg = pygame.image.load(os.path.join("images", "beers", "pub1.jpeg"))
+            bg = pygame.transform.scale(bg, (self.screen_width, self.screen_height))
+            man = pygame.image.load(os.path.join("images", "beers", "man.png"))
+            man = pygame.transform.scale(man, (self.screen_width, self.screen_height))
+            self.screen.blit(bg, (0, 0))
+            self.screen.blit(man, (0, 0))
+        except pygame.error as e:
+            print(f"Error loading background image: {e}")
+
     def select_unique_random_beer_images(self):
         image_keys = list(self.beer_images.keys())
         return random.sample(image_keys, 7)
@@ -87,8 +99,9 @@ class GameWindow():
     def background(self):
         self.screen.fill(self.GREY)
         # Man's body
-        pygame.draw.circle(self.screen, self.RED, (self.screen_width // 2, self.screen_height // 4), 80)
-        pygame.draw.circle(self.screen, self.PURPLE, (self.screen_width // 2, self.screen_height), 400)
+        # pygame.draw.circle(self.screen, self.RED, (self.screen_width // 2, self.screen_height // 4), 80)
+        # pygame.draw.circle(self.screen, self.PURPLE, (self.screen_width // 2, self.screen_height), 400)
+        self.load_bg()
         # Load a random hat from the "fishhats" folder
         # Draw the hat only if one was selected
         if self.selected_hat:
@@ -98,7 +111,7 @@ class GameWindow():
         pygame.draw.rect(self.screen, self.BROWN, [0, self.screen_height // 1.25, self.screen_width, 300])
         # Display points
         player_points_text = f'{int(self.player_total_points)}'
-        self.draw_text(player_points_text, self.screen_width - 200, self.screen_height // 10, self.BLACK)
+        self.draw_text(player_points_text, self.screen_width - 200, self.screen_height // 10, self.WHITE)
 
     def show_sequence(self):
         self.background()
@@ -174,6 +187,8 @@ class GameWindow():
                 self.generate_sequence()
         else:
             print("Incorrect sequence!")
+            print(f"seq: {self.sequence}")
+            print(f"urs: {self.user_sequence}")
             self.player_total_points -= 1
             self.gamestate = False
 

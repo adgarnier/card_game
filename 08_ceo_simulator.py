@@ -13,11 +13,11 @@ class CEOSimulator:
         pygame.display.set_caption("CEO Simulator")
 
         self.WHITE = (255, 255, 255)
-        self.GREY = (230, 230, 230)
+        self.GREY = (178, 190, 181)
         self.BLACK = (0, 0, 0)
-        self.RED = (200, 50, 50)
+        self.RED = (210, 43, 43)
         self.GREEN = (50, 160, 50)
-        self.BLUE = (50, 80, 200)
+        self.BLUE = (76, 81, 247)
         self.GOLD = (200, 180, 50)
 
         self.font = pygame.font.SysFont(None, 40)
@@ -62,6 +62,7 @@ class CEOSimulator:
             self.scenarios = json.load(file)
 
     def reset(self):
+        self.scenarios_played = 0
         self.click = True
         self.type = ""
         self.penalty_message = ""
@@ -75,7 +76,22 @@ class CEOSimulator:
         self.scenarios_seen = set()
         self.next_scenario()
 
+    def draw_stat_bar(self, x, y, value, max_value, label, color):
+        bar_width = 200
+        bar_height = 20
+        fill_width = int((value / max_value) * bar_width)
+        
+        # Draw border
+        pygame.draw.rect(self.screen, self.BLACK, (x, y, bar_width, bar_height), 2)
+        
+        # Draw filled portion
+        pygame.draw.rect(self.screen, color, (x, y, fill_width, bar_height))
+        
+        # Label
+        self.draw_text(f"{label}", x + bar_width + 10, y - 2, self.small_font, self.BLACK)
+
     def next_scenario(self):
+        self.scenarios_played += 1
         if len(self.scenarios_seen) == len(self.scenarios):
             self.scenarios_seen.clear()  # Reset when all have been shown
 
@@ -168,19 +184,15 @@ class CEOSimulator:
                 return
 
     def draw_stats(self):
-        color_money = self.BLACK
-        color_reputation = self.BLACK
-        color_morale = self.BLACK
-        if self.money >= self.money_high:
-            color_money = self.RED
-        if self.reputation >= self.reputation_high:
-            color_reputation = self.RED
-        if self.morale >= self.morale_high:
-            color_morale = self.RED
-            
-        self.draw_text(f"Money: {self.money}", 20, 20, self.small_font, color_money)
-        self.draw_text(f"Reputation: {self.reputation}", 20, 50, self.small_font, color_reputation)
-        self.draw_text(f"Morale: {self.morale}", 20, 80, self.small_font, color_morale)
+        # Determine colors
+        color_money = self.RED if self.money >= self.money_high else self.GREEN
+        color_reputation = self.RED if self.reputation >= self.reputation_high else self.GREEN
+        color_morale = self.RED if self.morale >= self.morale_high else self.GREEN
+
+        # Draw stat bars
+        self.draw_stat_bar(50, 20, self.money, 150, "Money", color_money)
+        self.draw_stat_bar(50, 60, self.reputation, 150, "Reputation", color_reputation)
+        self.draw_stat_bar(50, 100, self.morale, 150, "Morale", color_morale)
 
     def check_game_over(self):
         if self.money <= 0 or self.reputation <= 0 or self.morale <= 0:
@@ -193,9 +205,8 @@ class CEOSimulator:
             self.game_over("Congratulations, you've won!")
 
     def game_over(self, message):
-        self.screen.fill(self.GREY)
-        self.draw_text(message, self.screen_width // 5, self.screen_height // 2, self.font, self.RED) 
-        pygame.display.flip()
+        win = "Congratulations" in message
+        self.show_summary(win)
 
     def game_type(self, type):
         self.type = type
@@ -210,6 +221,38 @@ class CEOSimulator:
             self.reputation_high = 70
         elif self.type == "Idealist":
             return
+
+    def show_summary(self, win):
+        self.screen.fill(self.GREY)
+
+        title = "You Win!" if win else "Game Over"
+        color = self.GREEN if win else self.RED
+
+        self.draw_text(title, 250, 100, self.font, color)
+        self.draw_text(f"CEO Type: {self.type}", 250, 180, self.small_font, self.BLACK)
+        self.draw_text(f"Scenarios Played: {self.scenarios_played}", 250, 220, self.small_font, self.BLACK)
+        self.draw_text(f"Final Money: {self.money}", 250, 260, self.small_font, self.BLACK)
+        self.draw_text(f"Final Reputation: {self.reputation}", 250, 300, self.small_font, self.BLACK)
+        self.draw_text(f"Final Morale: {self.morale}", 250, 340, self.small_font, self.BLACK)
+
+        self.draw_text("Press R to Restart or ESC to Quit", 180, 420, self.small_font, self.BLACK)
+        pygame.display.flip()
+
+        # Wait for input
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.reset()
+                        self.startup_screen()
+                        waiting = False
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        exit()
 
     def main(self):
         self.startup_screen()

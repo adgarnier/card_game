@@ -25,6 +25,7 @@ class GameWindow():
         
         self.images = self.load_images()
         self.minimap = False
+        self.note = False
         self.falses()
         
     def falses(self):
@@ -39,7 +40,7 @@ class GameWindow():
         # reset images
         self.skeleton = False
         self.painting = False
-        self.note = False
+        # self.note = False
         self.grimreaper = False
         self.spider = False
         
@@ -194,6 +195,7 @@ class GameWindow():
         self.current_maze_index = 0
         self.maze_size += 1
         self.gamestate = True
+        self.note = False
         self.falses()
 
     def fade_out(self, speed=5):
@@ -405,24 +407,18 @@ class GameWindow():
         right_area = (2 * self.screen_width // 3, self.screen_width)  # Right door
         backwards_area = (self.screen_height - 100, self.screen_height)
         next_area = (self.screen_height - 150, self.screen_height)
+        note_area = (self.note_position_x + 60, self.note_position_y + 60)
 
         if next_area[0] <= mouse_pos[1] < next_area[1] \
         and self.player_positions[self.current_maze_index] == self.end_positions[self.current_maze_index]:
             self.player_total_points += 1
             self.next_game()
-
-        self.start = False
-        self.end = False
-        self.skeleton = False
-        self.painting = False
-        self.note = False
-        # Move player with arrow keys
-        self.top_wall = False
-        self.bottom_wall = False
-        self.right_wall = False
-        self.left_wall = False
-
-        if straight_area[0] <= mouse_pos[0] < straight_area[1] \
+            
+        self.falses()
+        
+        if note_area[0] <= mouse_pos[1] < note_area[1]:
+            print("you found a note")
+        elif straight_area[0] <= mouse_pos[0] < straight_area[1] \
         and straight_area[2] <= mouse_pos[1] < straight_area[3] \
         and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
             self.total_position += 0  
@@ -523,8 +519,10 @@ class GameWindow():
                     (self.player_positions[0][0], self.player_positions[0][1] - 1),(self.player_positions[1][0] + 1, self.player_positions[1][1]),
                     (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
                     ]
+        self.note = False
 
     def handle_key_movement(self, event_key):
+        self.note = False
         self.falses()
         if event_key == pygame.K_UP and not self.mazes[self.current_maze_index][self.player_positions[self.current_maze_index][1]][self.player_positions[self.current_maze_index][0]]['top']:
             self.total_position += 0
