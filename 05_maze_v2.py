@@ -11,7 +11,8 @@ class GameWindow():
         pygame.display.set_caption("Maze")
         self.colors = {"WHITE": (255, 255, 255), "GREY": (178, 190, 181), "BLACK": (0, 0, 0), 
                        "RED": (210, 43, 43), "GREEN": (49, 146, 54), "BLUE": (76, 81, 247),
-                       "PURPLE": (157, 77, 187), "GOLD": (243, 175, 25), "GREY2": (100, 100, 100)}
+                       "PURPLE": (157, 77, 187), "GOLD": (243, 175, 25), "GREY2": (100, 100, 100),
+                       "GREY3": (195, 195, 195)}
         self.font = pygame.font.SysFont(None, 55)
         self.dt = 0
         self.player_total_points = 0
@@ -416,7 +417,8 @@ class GameWindow():
             
         self.falses()
         
-        if note_area[0] <= mouse_pos[1] < note_area[1]:
+        if note_area[0] <= mouse_pos[1] < note_area[1] and self.note:
+            self.pick_note()
             print("you found a note")
         elif straight_area[0] <= mouse_pos[0] < straight_area[1] \
         and straight_area[2] <= mouse_pos[1] < straight_area[3] \
@@ -626,6 +628,41 @@ class GameWindow():
                     (self.player_positions[2][0], self.player_positions[2][1] + 1),(self.player_positions[3][0] - 1, self.player_positions[3][1])
                     ]
 
+    def pick_note(self):
+        if not hasattr(self, 'last_points'):
+            self.last_points = -1  # or whatever makes sense for starting value
+
+        if self.player_total_points != self.last_points:
+            self.last_points = self.player_total_points
+            note_notes = (
+                "don't lose the light", "the walls remember", "you shouldn't be here", "there's only one way out",
+                "i saw myself, but it wasn't me", "the notes write back", "they moved the exit again"
+                "hello?", "which maze am i in?", "it keeps expanding", "wrong turn. very wrong.",
+                "skeleton keeps you safe"
+            )
+            current_note = random.choice(note_notes)
+        else:
+            current_note = ""
+        self.read_note(current_note)
+
+    def read_note(self, current_note):
+        start_time = pygame.time.get_ticks()
+        showing = True
+
+        while showing:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            
+            self.draw_wall_images()
+            pygame.draw.rect(self.screen, self.colors["GREY3"], (30, 100, 750, 450))
+            self.draw_text(current_note, 80, 300, self.colors["BLACK"])
+            pygame.display.flip()
+            
+            if pygame.time.get_ticks() - start_time > 2000:
+                showing = False
+                
     def main(self):
         running = True
         clock = pygame.time.Clock()

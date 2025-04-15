@@ -42,6 +42,7 @@ class CEOSimulator:
             for i, ceo_type in enumerate(types):
                 rect = pygame.Rect(250, 180 + i * 80, 300, 50)
                 pygame.draw.rect(self.screen, self.BLUE, rect)
+                pygame.draw.rect(self.screen, self.BLACK, rect, 2)  # Optional border
                 self.draw_text(ceo_type, rect.x + 20, rect.y + 10, self.small_font, self.WHITE)
                 buttons.append((rect, ceo_type))
 
@@ -128,11 +129,32 @@ class CEOSimulator:
 
     def load_bg(self):
         try:
-            monitor = pygame.image.load(os.path.join("images", "ceo", "monitor.png"))
+            # Load and scale monitor image once
+            monitor = pygame.image.load(os.path.join("images", "ceo", "monitor_desk.png"))
             monitor = pygame.transform.scale(monitor, (self.screen_width, self.screen_height))
-            self.screen.blit(monitor, (0, 0))
-        except pygame.error as e:
-            print(f"Error loading background image: {e}")
+
+            # Dictionary mapping CEO types to their background and ornament images
+            ceo_assets = {
+                "Capitalist": ("bg_cap.png", "ornaments_capitalist.png"),
+                "Narcissist": ("bg_nar.jpg", "ornaments_narcissist.png"),
+                "Socialist": ("bg_soc.jpg", "ornaments_socialist.png"),
+                "Idealist": ("bg_ideal.jpg", "ornaments_idealist.png"),
+            }
+
+            if self.type in ceo_assets:
+                bg_file, ornament_file = ceo_assets[self.type]
+                bg = pygame.image.load(os.path.join("images", "ceo", bg_file))
+                bg = pygame.transform.scale(bg, (self.screen_width, self.screen_height))
+                self.screen.blit(bg, (0, 0))
+
+                ornament = pygame.image.load(os.path.join("images", "ceo", ornament_file))
+                ornament = pygame.transform.scale(ornament, (self.screen_width, self.screen_height))
+
+                pygame.draw.rect(self.screen, self.GREY, (28, 38, 743, 400))
+                self.screen.blit(monitor, (0, 0))
+                self.screen.blit(ornament, (0, 0))
+        except Exception as e:
+            print(f"Error loading background: {e}")
 
     def apply_effects(self, effects):
         self.money += effects.get("money", 0)
@@ -181,8 +203,8 @@ class CEOSimulator:
 
         # Clamp values
         self.money = max(0, self.money)
-        self.reputation = max(0, min(100, self.reputation))
-        self.morale = max(0, min(100, self.morale))
+        self.reputation = max(0, self.reputation)
+        self.morale = max(0, self.morale)
 
     def check_click(self, pos):
         for rect, choice in self.option_rects:
@@ -267,6 +289,45 @@ class CEOSimulator:
                         pygame.quit()
                         exit()
 
+    def show_note(self, text, x, y, duration=2000, color=(0, 0, 0)):
+        """
+        Display a temporary note on the screen.
+
+        Args:
+            text (str): The message to display.
+            x (int): X-coordinate.
+            y (int): Y-coordinate.
+            duration (int): Duration in milliseconds.
+            color (tuple): Text color (default: black).
+        """
+        start_time = pygame.time.get_ticks()
+        showing = True
+
+        while showing:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+            self.screen.fill(self.GREY)  # or redraw your current scene here
+            self.load_bg()
+            self.draw_stats()
+            self.draw_text(self.current["scenario"], 50, 130, self.font, self.BLACK)
+
+            # Redraw options (so note appears on top)
+            for i, choice in enumerate(self.current["choices"]):
+                rect = pygame.Rect(70, 210 + i * 70, 660, 50)
+                pygame.draw.rect(self.screen, self.BLUE, rect)
+                self.draw_text(choice["text"], rect.x + 10, rect.y + 10, self.small_font, self.WHITE)
+
+            # Draw the note
+            self.draw_text(text, x, y, self.font, color)
+
+            pygame.display.flip()
+
+            if pygame.time.get_ticks() - start_time > duration:
+                showing = False
+
     def main(self):
         self.startup_screen()
         clock = pygame.time.Clock()
@@ -290,12 +351,26 @@ class CEOSimulator:
             self.draw_text(self.current["scenario"], 50, 130, self.font, self.BLACK)
 
             self.option_rects = []
+            mouse_pos = pygame.mouse.get_pos()  # Get mouse position
+
             for i, choice in enumerate(self.current["choices"]):
                 rect = pygame.Rect(70, 210 + i * 70, 660, 50)
-                pygame.draw.rect(self.screen, self.BLUE, rect)
+                
+                # Hover color logic
+                is_hovered = rect.collidepoint(mouse_pos)
+                button_color = (140, 140, 255) if is_hovered else self.BLUE
+
+                pygame.draw.rect(self.screen, button_color, rect)
+                pygame.draw.rect(self.screen, self.BLACK, rect, 2)  # Optional border
                 self.draw_text(choice["text"], rect.x + 10, rect.y + 10, self.small_font, self.WHITE)
+
                 if self.click:
                     self.option_rects.append((rect, choice))
+
+            if any(rect.collidepoint(mouse_pos) for rect, _ in self.option_rects):
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+            else:
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
             if self.feedback:
                 self.click = False
