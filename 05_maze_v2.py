@@ -216,6 +216,7 @@ class GameWindow():
     def reset_game(self):
         self.player_total_points = 0
         self.maze_size = 2
+        self.note = False
         self.next_game()
         self.maze_setup()
     
@@ -638,7 +639,7 @@ class GameWindow():
                 "don't lose the light", "the walls remember", "you shouldn't be here", "there's only one way out",
                 "i saw myself, but it wasn't me", "the notes write back", "they moved the exit again"
                 "hello?", "which maze am i in?", "it keeps expanding", "wrong turn. very wrong.",
-                "skeleton keeps you safe"
+                "skeleton keeps you safe", "skeleton locks you in"
             )
             current_note = random.choice(note_notes)
         else:

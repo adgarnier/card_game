@@ -39,12 +39,23 @@ class CEOSimulator:
             types = ["Capitalist", "Narcissist", "Socialist", "Idealist"]
             buttons = []
 
+            mouse_pos = pygame.mouse.get_pos()
+
             for i, ceo_type in enumerate(types):
                 rect = pygame.Rect(250, 180 + i * 80, 300, 50)
-                pygame.draw.rect(self.screen, self.BLUE, rect)
+
+                is_hovered = rect.collidepoint(mouse_pos)
+                button_color = (140, 140, 255) if is_hovered else self.BLUE
+
+                pygame.draw.rect(self.screen, button_color, rect)
                 pygame.draw.rect(self.screen, self.BLACK, rect, 2)  # Optional border
                 self.draw_text(ceo_type, rect.x + 20, rect.y + 10, self.small_font, self.WHITE)
                 buttons.append((rect, ceo_type))
+
+            if any(rect.collidepoint(mouse_pos) for rect, _ in buttons):
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
+            else:
+                pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -135,7 +146,7 @@ class CEOSimulator:
 
             # Dictionary mapping CEO types to their background and ornament images
             ceo_assets = {
-                "Capitalist": ("bg_cap.png", "ornaments_capitalist.png"),
+                "Capitalist": ("bg_cap_2.png", "ornaments_capitalist.png"),
                 "Narcissist": ("bg_nar.jpg", "ornaments_narcissist.png"),
                 "Socialist": ("bg_soc.jpg", "ornaments_socialist.png"),
                 "Idealist": ("bg_ideal.jpg", "ornaments_idealist.png"),
