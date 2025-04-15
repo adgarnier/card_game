@@ -219,6 +219,13 @@ class CEOSimulator:
         color_money = self.RED if self.money >= self.money_high else self.GREEN
         color_reputation = self.RED if self.reputation >= self.reputation_high else self.GREEN
         color_morale = self.RED if self.morale >= self.morale_high else self.GREEN
+        if self.type == "Idealist":
+            if not (abs(self.money - self.reputation) <= 20 and 
+                    abs(self.reputation - self.morale) <= 20 and 
+                    abs(self.money - self.morale) <= 20):
+                color_money = self.RED
+                color_reputation = self.RED
+                color_morale = self.RED
 
         # Draw stat bars
         self.draw_stat_bar(50, 45, self.money, 150, "Money", color_money)
@@ -231,8 +238,7 @@ class CEOSimulator:
         elif (self.type == "Capitalist" and self.money >= 150)\
         or (self.type == "Narcissist" and self.reputation >= 150)\
         or (self.type == "Socialist" and self.morale >= 150)\
-        or (self.type == "Idealist" and self.money >= 150 and self.reputation >= 150 and self.morale >= 150)\
-        or (self.type == "" and self.money >= 100):
+        or (self.type == "Idealist" and self.money >= 150 and self.reputation >= 150 and self.morale >= 150):
             self.game_over("Congratulations, you've won!")
 
     def game_over(self, message):
@@ -254,6 +260,9 @@ class CEOSimulator:
             self.reputation_high = 70
             self.morale_high = 1000
         elif self.type == "Idealist":
+            self.money_high = 150
+            self.reputation_high = 150
+            self.morale_high = 150
             return
 
     def show_summary(self, win):
@@ -288,45 +297,6 @@ class CEOSimulator:
                     elif event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         exit()
-
-    def show_note(self, text, x, y, duration=2000, color=(0, 0, 0)):
-        """
-        Display a temporary note on the screen.
-
-        Args:
-            text (str): The message to display.
-            x (int): X-coordinate.
-            y (int): Y-coordinate.
-            duration (int): Duration in milliseconds.
-            color (tuple): Text color (default: black).
-        """
-        start_time = pygame.time.get_ticks()
-        showing = True
-
-        while showing:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-
-            self.screen.fill(self.GREY)  # or redraw your current scene here
-            self.load_bg()
-            self.draw_stats()
-            self.draw_text(self.current["scenario"], 50, 130, self.font, self.BLACK)
-
-            # Redraw options (so note appears on top)
-            for i, choice in enumerate(self.current["choices"]):
-                rect = pygame.Rect(70, 210 + i * 70, 660, 50)
-                pygame.draw.rect(self.screen, self.BLUE, rect)
-                self.draw_text(choice["text"], rect.x + 10, rect.y + 10, self.small_font, self.WHITE)
-
-            # Draw the note
-            self.draw_text(text, x, y, self.font, color)
-
-            pygame.display.flip()
-
-            if pygame.time.get_ticks() - start_time > duration:
-                showing = False
 
     def main(self):
         self.startup_screen()
