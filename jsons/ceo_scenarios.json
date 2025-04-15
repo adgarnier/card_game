@@ -721,7 +721,7 @@
     },
     {
       "id": "81",
-      "scenario": "Your company receives a major contract from a government with a history of human rights abuses and war crimes.",
+      "scenario": "Your company receives a major contract from a corrupt government.",
       "choices": [
         {"text": "Accept the contract","effects": {"money": 20,"reputation": -30},"feedback": "The deal brings significant profits."},
         {"text": "Reject the contract and publicly denounce the government","effects": {"money": -25,"reputation": 10},"feedback": "You gain some praise for standing up."},
@@ -730,7 +730,7 @@
     },
     {
       "id": "82",
-      "scenario": "A top and essential supplier is caught exploiting child labor in a developing country.",
+      "scenario": "A top and essential supplier is caught exploiting child labor.",
       "choices": [
         {"text": "Continue using the supplier and turn a blind eye","effects": {"money": 25,"reputation": -40},"feedback": "Profits made with severe public backlash."},
         {"text": "Immediately sever ties and absorb the financial loss","effects": {"money": -20,"reputation": 30},"feedback": "Respected earned but money lost."},
@@ -739,16 +739,16 @@
     },
     {
       "id": "83",
-      "scenario": "An employee with insider information about major market shifts offers you a lucrative tip to manipulate stock prices.",
+      "scenario": "An employee with insider informationoffers you a lucrative tip to manipulate stock prices.",
       "choices": [
-        {"text": "Use the insider information and profit","effects": {"money": 40,"reputation": -50},"feedback": "The profits are huge but your reputation is ruined."},
-        {"text": "Report the employee and cooperate with authorities","effects": {"money": -15,"reputation": 10},"feedback": "You avoid legal trouble and are praised for your honesty."},
-        {"text": "Ignore the tip and keep things as is","effects": {"money": 5,"reputation": -10},"feedback": "The lack of ambition will hurt your growth prospects."}
+        {"text": "Use the insider information and profit","effects": {"money": 40,"reputation": -50},"feedback": "Huge profits but your reputation is ruined."},
+        {"text": "Report the employee and cooperate with authorities","effects": {"money": -15,"reputation": 10},"feedback": "You avoid trouble and are praised for honesty."},
+        {"text": "Ignore the tip and keep things as is","effects": {"money": 5,"reputation": -10},"feedback": "The lack of ambition hurts your growth."}
       ]
     },
     {
       "id": "84",
-      "scenario": "An influential celebrity offers to endorse your product, but they've recently been involved in a major scandal.",
+      "scenario": "An influential celebrity offers to endorse your product, but they're involved in a major scandal.",
       "choices": [
         {"text": "Accept the endorsement to boost sales","effects": {"money": 35,"reputation": -20},"feedback": "Sales soar, but public perception of plummets."},
         {"text": "Turn down the offer and stay clean","effects": {"money": -5,"reputation": 20},"feedback": "You earn respect for your integrity."},
@@ -757,34 +757,34 @@
     },
     {
       "id": "85",
-      "scenario": "Your company is hit with a class-action lawsuit accusing you of intentionally misrepresenting the effects of a life-saving product.",
+      "scenario": "Your company faces a lawsuit accusing you of lying about a life-saving product.",
       "choices": [
-        {"text": "Fight the lawsuit in court and deny any wrongdoing","effects": {"money": -20,"reputation": -50},"feedback": "You face a long, costly trial that damages your reputation."},
-        {"text": "Settle out of court and pay the victims","effects": {"money": -40,"reputation": 20},"feedback": "You lose a significant amount of money avoiding the negative press."},
-        {"text": "Admit fault and recall the product","effects": {"money": -40,"reputation": 40},"feedback": "A huge financial hit to strengthen your public image."}
+        {"text": "Fight the lawsuit in court and deny any wrongdoing","effects": {"money": -10,"reputation": -40},"feedback": "No one liked that."},
+        {"text": "Settle out of court and pay the victims","effects": {"money": -30,"reputation": 20},"feedback": "Money lost avoiding the negative press."},
+        {"text": "Admit fault and recall the product","effects": {"money": -30,"reputation": 40},"feedback": "A financial hit to strengthen your public image."}
       ]
     },
     {
       "id": "86",
-      "scenario": "A tech giant offers you a lucrative deal to implement a highly invasive surveillance system in your products.",
+      "scenario": "A tech giant offers you a deal to implement a highly invasive surveillance system.",
       "choices": [
         {"text": "Accept the deal and integrate the system","effects": {"money": 40,"reputation": -25},"feedback": "Surveillance state enabler."},
         {"text": "Refuse the deal and risk losing market share","effects": {"money": -20,"reputation": 30},"feedback": "Competitors who accept the deal surge ahead."},
-        {"text": "Negotiate a compromise with the tech giant to reduce the scope","effects": {"money": 20,"reputation": -20},"feedback": "Your company's privacy policies are now a gray area."}
+        {"text": "Negotiate a compromise with the tech giant to reduce the scope","effects": {"money": 20,"reputation": -20},"feedback": "Your company's privacy policies are gray."}
       ]
     },
     {
       "id": "87",
-      "scenario": "Your company is under pressure to release a product before it is fully tested, promising huge sales but carrying a major risk of failure.",
+      "scenario": "Your company is under pressure to release a product before it is fully tested.",
       "choices": [
-        {"text": "Release the product and capitalize on the hype","effects": {"money": 50,"reputation": -40},"feedback": "The product fails, causing a massive public relations disaster."},
-        {"text": "Delay the product launch and take time to ensure quality","effects": {"money": -15,"reputation": 20},"feedback": "The quality of the product gains you long-term trust."},
+        {"text": "Release the product and capitalize on the hype","effects": {"money": 50,"reputation": -40},"feedback": "Money flows but the product fails."},
+        {"text": "Delay the product launch and take time to ensure quality","effects": {"money": -15,"reputation": 20},"feedback": "The product gains you long-term trust."},
         {"text": "Release a scaled-down version of the product","effects": {"money": 20,"reputation": -10},"feedback": "The release is safe."}
       ]
     },
     {
       "id": "88",
-      "scenario": "Your company is caught using tax loopholes to avoid paying a significant amount of taxes, causing an outcry from the public.",
+      "scenario": "Your company is caught using tax loopholes.",
       "choices": [
         {"text": "Defend the loopholes legally and continue business as usual","effects": {"money": 25,"reputation": -50},"feedback": "Many customers feel betrayed."},
         {"text": "Publicly announce a voluntary increase in taxes","effects": {"money": -40,"reputation": 40},"feedback": "You take a financial hit but win back public support."},
@@ -793,20 +793,111 @@
     },
     {
       "id": "89",
-      "scenario": "You discover a potential scientific breakthrough that could revolutionize your industry, but it's based on unethical practices in research.",
+      "scenario": "Unethical research leads to a scientific breakthrough that revolutionizes your industry.",
       "choices": [
-        {"text": "Go ahead with the breakthrough and profit from it","effects": {"money": 55,"reputation": -40},"feedback": "The breakthrough brings immense wealth, the ethical concerns lead to severe backlash."},
+        {"text": "Go ahead with the breakthrough and profit from it","effects": {"money": 55,"reputation": -40},"feedback": "The breakthrough brings immense wealth."},
         {"text": "Abort the research and report to the authorities","effects": {"money": -25,"reputation": 40},"feedback": "You gain immense respect for doing the right thing."},
-        {"text": "Try to find a way to ethically replicate the breakthrough","effects": {"money": 10,"reputation": -5},"feedback": "You maintain your integrity, with a minor loss in profits."}
+        {"text": "Try to find a way to ethically replicate the breakthrough","effects": {"money": 10,"reputation": -5},"feedback": "You maintain your integrity."}
       ]
     },
     {
       "id": "90",
-      "scenario": "Your company is caught falsifying environmental reports to avoid stricter regulations, but you're facing a massive financial crisis.",
+      "scenario": "Your company is caught falsifying environmental reports to avoid stricter regulations.",
       "choices": [
-        {"text": "Continue the deception and hope the crisis passes","effects": {"money": 60,"reputation": -40},"feedback": "The financial crisis is averted but your reputation is completely ruined."},
-        {"text": "Admit the false reports and fix your environmental impact","effects": {"money": -40,"reputation": 20},"feedback": "You rebuild your public image by committing to real environmental change."},
-        {"text": "Hide the truth and blame a lower-level employee","effects": {"money": 25,"reputation": -35},"feedback": "Your company becomes a symbol of corporate deceit."}
+        {"text": "Continue the deception and hope the crisis passes","effects": {"money": 40,"reputation": -30},"feedback": "The financial crisis is averted."},
+        {"text": "Admit the false reports and fix your environmental impact","effects": {"money": -30,"reputation": 20},"feedback": "You commit to real environmental change."},
+        {"text": "Hide the truth and blame a lower-level employee","effects": {"money": 25,"reputation": -35},"feedback": "Your company is a symbol of corporate deceit."}
       ]
-    }
+    },
+    {
+      "id": "91",
+      "scenario": "Your company is asked to develop surveillance technology for an evil government.",
+      "choices": [
+          { "text": "Accept the contract", "effects": { "money": 50, "morale": -20, "reputation": -30 }, "feedback": "The financial gain is significant." },
+          { "text": "Decline the contract", "effects": { "money": -20, "morale": 20, "reputation": 30 }, "feedback": "You gain respect for your ethical stance." },
+          { "text": "Negotiate terms to minimize harm", "effects": { "money": 20, "morale": -10, "reputation": -10 }, "feedback": "You compromise." }
+      ]
+  },
+  {
+      "id": "92",
+      "scenario": "A major shareholder demands that your company cuts costs by reducing employee benefits.",
+      "choices": [
+          { "text": "Agree to the cuts", "effects": { "money": 40, "morale": -30, "reputation": -20 }, "feedback": "You save money at a cost." },
+          { "text": "Refuse and protect employee benefits", "effects": { "money": -20, "morale": 30, "reputation": 20 }, "feedback": "Employees appreciate your loyalty." },
+          { "text": "Find a middle ground", "effects": { "money": 10, "morale": -10, "reputation": 0 }, "feedback": "A compromise that doesn't fully satisfy." }
+      ]
+  },
+  {
+      "id": "93",
+      "scenario": "Your company is accused of using sweatshop labor overseas.",
+      "choices": [
+          { "text": "Deny the allegations and continue operations", "effects": { "money": 30, "morale": -20, "reputation": -40 }, "feedback": "Money keeps coming in." },
+          { "text": "Admit fault and overhaul labor practices", "effects": { "money": -30, "morale": 20, "reputation": 40 }, "feedback": "A costly decision that restores public trust." },
+          { "text": "Investigate and make gradual improvements", "effects": { "money": -10, "morale": 10, "reputation": 20 }, "feedback": "An approach that shows commitment to change." }
+      ]
+  },
+  {
+      "id": "94",
+      "scenario": "An activist group targets your company for environmental damage.",
+      "choices": [
+          { "text": "Launch an aggressive PR campaign to discredit the group", "effects": { "money": -10, "morale": -10, "reputation": -30 }, "feedback": "The campaign backfires." },
+          { "text": "Engage with the activists and commit to environmental reforms", "effects": { "money": -20, "morale": 20, "reputation": 30 }, "feedback": "Your commitment to change is praised." },
+          { "text": "Ignore the activists and continue operations", "effects": { "money": 0, "morale": -10, "reputation": -20 }, "feedback": "Ignoring the issue leads to ongoing criticism." }
+      ]
+  },
+  {
+      "id": "95",
+      "scenario": "Your company is offered a lucrative deal to provide technology for military applications.",
+      "choices": [
+          { "text": "Accept the deal", "effects": { "money": 50, "morale": -20, "reputation": -20 }, "feedback": "The financial gain is significant." },
+          { "text": "Decline the deal", "effects": { "money": -20, "morale": 20, "reputation": 30 }, "feedback": "You gain respect for your ethical stance." },
+          { "text": "Negotiate terms to ensure ethical use", "effects": { "money": 20, "morale": -10, "reputation": -10 }, "feedback": "You face ethical scrutiny." }
+      ]
+  },
+  {
+      "id": "96",
+      "scenario": "A major scandal reveals that your company's products contain harmful chemicals.",
+      "choices": [
+          { "text": "Recall the products and issue a public apology", "effects": { "money": -30, "morale": 10, "reputation": 40 }, "feedback": "A costly step to restore public trust." },
+          { "text": "Cover up the issue and continue sales", "effects": { "money": 30, "morale": -15, "reputation": -35 }, "feedback": "Profits remain high, damaging your reputation." },
+          { "text": "Investigate and gradually phase out the chemicals", "effects": { "money": -10, "morale": 0, "reputation": 20 }, "feedback": "You show commitment to change." }
+      ]
+  },
+  {
+      "id": "97",
+      "scenario": "Your company is facing a hostile takeover by a larger competitor.",
+      "choices": [
+          { "text": "Fight the takeover with legal action", "effects": { "money": -30, "morale": 10, "reputation": 20 }, "feedback": "A costly battle." },
+          { "text": "Negotiate a merger to retain some control", "effects": { "money": 20, "morale": -10, "reputation": 10 }, "feedback": "A compromise that maintains some control." },
+          { "text": "Accept the takeover", "effects": { "money": 40, "morale": -25, "reputation": -15 }, "feedback": "You're a sell out." }
+      ]
+  },
+  {
+      "id": "98",
+      "scenario": "Your company's data collection practices come under scrutiny for privacy violations.",
+      "choices": [
+          { "text": "Defend your practices and continue as usual", "effects": { "money": 30, "morale": -20, "reputation": -30 }, "feedback": "Profits remain high." },
+          { "text": "Admit fault and change data practices", "effects": { "money": -20, "morale": 20, "reputation": 40 }, "feedback": "A costly decision that restores public trust." },
+          { "text": "Investigate and make gradual improvements", "effects": { "money": -10, "morale": 10, "reputation": 20 }, "feedback": "You show commitment to change." }
+      ]
+  },
+  {
+      "id": "99",
+      "scenario": "Your company is offered a deal to produce a highly addictive product.",
+      "choices": [
+          { "text": "Accept the deal", "effects": { "money": 50, "morale": -20, "reputation": -30 }, "feedback": "Money never tasted so good." },
+          { "text": "Decline the deal", "effects": { "money": -20, "morale": 20, "reputation": 30 }, "feedback": "You gain respect for your ethical stance." },
+          { "text": "Negotiate terms to reduce addiction risk", "effects": { "money": 20, "morale": -10, "reputation": -10 }, "feedback": "You compromise, but still face ethical scrutiny." }
+      ]
+  },
+  {
+      "id": "100",
+      "scenario": "A whistleblower exposes your company's involvement in illegal activities.",
+      "choices": [
+          { "text": "Cover up the activities and discredit the whistleblower", "effects": { "money": 20, "morale": -10, "reputation": -30 }, "feedback": "You maintain profits but damage public trust." },
+          { "text": "Admit fault and cooperate with authorities", "effects": { "money": -30, "morale": 20, "reputation": 30 }, "feedback": "A costly step to restore public trust." },
+          { "text": "Investigate and quietly correct the issues", "effects": { "money": -10, "morale": 0, "reputation": 15 }, "feedback": "You avoid some backlash." }
+      ]
+  }
+
 ]
