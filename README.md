@@ -95,9 +95,9 @@ Choose your CEO persona and make impactful decisions. Balance money, morale, and
 ## 🎮 How to Play
 
 1. Run `_launcher.py`.  
-2. Use arrow keys or mouse hover to select a game.  
-3. Click or press enter to start playing.  
-4. Follow the on-screen instructions in each game.
+2. Use arrow keys or mouse hover to select a game.
+3. Read the on-screen instructions for each game (also below).
+4. Click or press enter to start playing. 
 
 ---
 
