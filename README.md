@@ -6,112 +6,115 @@
 
 Welcome to the **Pygame Game Collection**! This project contains original games, each developed using Python and Pygame. Whether you're in the mood for strategy, arcade action, puzzles, or simulation—there’s something here for everyone.
 
+---
+
 ## 📖 Table of Contents
-- [Games Included](#-games-included)
-  - [Card Guessing Game](#1-card-guessing-game)
-  - [Dodge Ball](#2-dodge-ball)
-  - [Drinking Game](#3-drinking-game)
-  - [Duck Duck Goose](#4-duck-duck-goose)
-  - [Maze v2](#5-maze-v2)
-  - [Match the Meaning](#6-match-the-meaning)
-  - [Duck Hunt](#7-duck-hunt)
-  - [CEO Simulator](#8-ceo-simulator)
-  - [Ball Mover](#9-ball-mover)
-  - [Drinking Game (Advanced)](#10-drinking-game)
-  - [Match the Meaning (Advanced)](#11-match-the-meaning)
+- [Games Included (8)](#-games-included-8)
+  - [1. Card Guessing Game](#1-card-guessing-game)
+  - [2. Dodge Ball](#2-dodge-ball)
+  - [3. Drinking Game](#3-drinking-game)
+  - [4. Duck Duck Goose](#4-duck-duck-goose)
+  - [5. Maze v2](#5-maze-v2)
+  - [6. Match the Meaning](#6-match-the-meaning)
+  - [7. Duck Hunt](#7-duck-hunt)
+  - [8. CEO Simulator](#8-ceo-simulator)
 - [Requirements](#️-requirements)
 - [How to Play](#-how-to-play)
 - [Developer Notes](#-developer-notes)
 
+---
+
 ## 📦 Games Included (8)
 
 ### 1. **Card Guessing Game**
-Guess the suit and rank of a hidden playing card. Score points for correct guesses, and challenge your memory and intuition.
+Guess the suit and rank of a hidden playing card. Score points for accurate guesses and test your memory and intuition.
 
-- 🃏 Randomized cards each round
-- 🎯 Tracks score for suit and rank
-- 🧠 Quick logic and chance-based gameplay
-
----
-
-### 2. **Dodge Ball**
-Dodge a relentless storm of falling balls and bombs! Switch between easy and hard modes to earn bonus points. Survive as long as possible to rack up the highest score.
-
-- 🔴 Balls fall from all directions—top, bottom, left, and right
-- 💣 Bombs can clear the screen and grant bonus points
-- 🎮 Reflex-based survival with smooth movement and collision detection
+- 🃏 Randomized card every round  
+- 🎯 Score system for both suit and rank  
+- 🧠 Simple, chance-based logic game  
 
 ---
 
-### 3. **Drinking Game**
-A fun and interactive game where players match a sequence of beer images that appear in random order. The game gets faster as the player progresses, testing both memory and reaction speed.
+### 2. **Dodge Ball**  
+Dodge falling balls that drop from the top of the screen. Move quickly and stay alert to survive!
 
-- 🍺 Matches beer images to a growing sequence
-- 🧠 Memory and reflex-based gameplay
-- 🎩 Customizable fish hat for added flair
-
----
-
-### 4. **Duck Duck Goose**
-A fast-paced shooting game where you shoot birds based on a target sequence. Hit the wrong bird, and it's game over!
-
-- 🦢 Shoot birds according to a randomized sequence
-- 💥 Explosions and score popups for correct hits
-- 🎯 Increasing difficulty with faster speeds and more challenging sequences
+- 🏃‍♂️ Randomized falling patterns  
+- 🎮 Arcade-style controls  
+- 💥 Increasing difficulty over time  
 
 ---
 
-### 5. **Maze v2**
-First-person maze exploration game. Navigate a series of rooms, find secrets items, and avoid death.
+### 3. **Drinking Game**  
+Match a growing sequence of beer images in the correct order. The pace quickens, testing both memory and reflexes.
 
-- 🧭 Procedurally rotated mazes
-- 🗺️ Room-based navigation
-- 🔍 Search for clues and notes
-
----
-
-### 6. **Match the Meaning**
-A word-guessing game where players match a word to its correct meaning from a set of options. Choose from multiple options and get instant feedback—great for sharpening language skills.
-
-- 📚 Match a word to its correct meaning from a list of options
-- 📖 Dictionary-based questions
-- 🏆 Improves language skills with gameplay
+- 🍺 Match beer icons in sequence  
+- ⚡ Gameplay speeds up as you progress  
+- 🎩 Optional fish hat for added flair  
 
 ---
 
-### 7. **Duck Hunt**
-A classic Where's Waldo-style game where players attempt to find a bird appearing in a huge background. The player earns points by successfully finding the bird, and the challenge increases as the bird size decreases with each round. 
+### 4. **Duck Duck Goose**  
+A fast-paced reflex game—shoot birds in the correct sequence. One wrong hit, and it’s game over!
 
-- 🦅 Find birds that appear randomly within the background
-- 🎯 Earn points for each bird found, with increasing difficulty over time
-- 🖼️ Dynamic background images change each round
+- 🦢 Match target sequence with quick shooting  
+- 💥 Explosions and score animations  
+- 🎯 Difficulty ramps up with more speed and more birds  
 
 ---
 
-### 8. **CEO Simulator**
-Choose your CEO type and make decisions through workplace scenarios. Each decision affects morale, money, and reputation.
+### 5. **Maze v2**  
+A first-person maze game. Navigate rotating mazes, collect clues, and avoid traps.
 
-- 🧑‍💼 4 CEO styles: Capitalist, Narcissist, Socialist, Idealist
-- 🔀 Random scenarios with consequences
-- 📊 Strategy-based stat balancing
+- 🧭 Procedurally generated maze rotations  
+- 🗺️ Room-to-room exploration  
+- 📜 Discover scattered notes with lore  
+
+---
+
+### 6. **Match the Meaning**  
+Test your vocabulary by matching words to their correct meanings. Choose from multiple options and get instant feedback—great for sharpening language skills.
+
+- 📚 Match a word to its correct meaning  
+- 🔢 Six randomized options per round  
+- ✅ Supports mouse and keyboard input  
+- 🧠 Fun and educational wordplay  
+
+---
+
+### 7. **Duck Hunt**  
+A Where’s Waldo-style game where players search for birds hiding in a large background. Each round gets tougher!
+
+- 🦅 Locate birds randomly hidden in scenes  
+- 🖼️ Backgrounds change dynamically  
+- 🎯 Points increase as birds get harder to spot  
+
+---
+
+### 8. **CEO Simulator**  
+Choose your CEO persona and make impactful decisions. Balance money, morale, and reputation through randomized scenarios.
+
+- 🧑‍💼 4 CEO types: Capitalist, Narcissist, Socialist, Idealist  
+- 🔀 Randomly presented workplace dilemmas  
+- 📊 Choices influence your stats and outcomes  
 
 ---
 
 ## 🛠️ Requirements
 
-- Python 3.8+
-- Pygame (`pip install pygame`)
+- Python 3.8 or higher  
+- Pygame (install with `pip install pygame`)  
+
+---
 
 ## 🎮 How to Play
 
-1. Launch the `game_launcher.py`.
-2. Hover over or arrow key to a game and click to play.
-3. Follow on-screen instructions for each game.
+1. Run `_launcher.py`.  
+2. Use arrow keys or mouse hover to select a game.  
+3. Click or press enter to start playing.  
+4. Follow the on-screen instructions in each game.
 
 ---
 
 ## 👨‍💻 Developer Notes
 
-This collection was made with creativity and fun in mind. Games are standalone and can be run individually.
-
-Feel free to expand or remix the games as you'd like!
+This collection was made with creativity and fun in mind. Each game is standalone and can also be run individually.
