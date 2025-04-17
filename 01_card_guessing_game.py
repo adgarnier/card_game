@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 import os
+import subprocess
 
 class Deck:
     def __init__(self):
@@ -167,6 +168,10 @@ class GameWindow:
         removed_window = RemovedCardsWindow(self.deck.removed_cards, self.card_images)
         removed_window.run()
 
+    def launch_launcher(self):
+        pygame.quit()
+        subprocess.run([sys.executable, "_launcher.py"])
+
     # Main game loop
     def main(self):
         running = True
@@ -178,6 +183,8 @@ class GameWindow:
                     running = False
                 elif event.type == pygame.KEYDOWN:
                     self.handle_keydown(event.key)
+                    if event.key == pygame.K_ESCAPE:
+                        self.launch_launcher()
                     if event.key == pygame.K_r:
                         print('Restarting...')
                         self.deck = Deck()
@@ -297,7 +304,7 @@ class RemovedCardsWindow:
         
         self.removed_cards = sorted_cards
         self.card_images = card_images  # Pass card images to this class
-
+        
     def draw_button(self, text, x, y, width, height, color):
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
@@ -355,6 +362,8 @@ class RemovedCardsWindow:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                elif event.type == pygame.KEYDOWN:
+                    self.handle_keydown(event.key)
 
             pygame.display.flip()
 

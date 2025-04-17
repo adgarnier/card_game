@@ -2,6 +2,8 @@ import pygame
 import random
 import json
 import os
+import subprocess
+import sys
 
 class CEOSimulator:
     def __init__(self):
@@ -309,6 +311,10 @@ class CEOSimulator:
                         pygame.quit()
                         exit()
 
+    def launch_launcher(self):
+        pygame.quit()
+        subprocess.run([sys.executable, "_launcher.py"])
+
     def main(self):
         self.startup_screen()
         clock = pygame.time.Clock()
@@ -321,7 +327,9 @@ class CEOSimulator:
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.check_click(event.pos)
                 elif event.type ==pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
+                    if event.key == pygame.K_ESCAPE:
+                        self.launch_launcher()
+                    elif event.key == pygame.K_r:
                         self.reset()
                         self.startup_screen()   
 

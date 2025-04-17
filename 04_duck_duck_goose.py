@@ -2,6 +2,8 @@ import math
 import pygame
 import random
 import os
+import subprocess
+import sys
 
 class GameWindow():
     def __init__(self):
@@ -189,6 +191,10 @@ class GameWindow():
         self.bird_images = self.load_bird_images()
         self.reset_game()
 
+    def launch_launcher(self):
+        pygame.quit()
+        subprocess.run([sys.executable, "_launcher.py"])
+
     def main(self):
         running = True
         clock = pygame.time.Clock()
@@ -200,8 +206,11 @@ class GameWindow():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                    self.reset_game()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        self.reset_game()
+                    if event.key == pygame.K_ESCAPE:
+                        self.launch_launcher()
                 elif event.type == pygame.MOUSEBUTTONDOWN and self.gamestate:
                     x, y = pygame.mouse.get_pos()
                     self.gun_shots()

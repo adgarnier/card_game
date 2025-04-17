@@ -1,6 +1,8 @@
 import pygame
 import random
 import os
+import subprocess
+import sys
 
 class GameWindow():
     def __init__(self):
@@ -663,6 +665,10 @@ class GameWindow():
             
             if pygame.time.get_ticks() - start_time > 2000:
                 showing = False
+
+    def launch_launcher(self):
+        pygame.quit()
+        subprocess.run([sys.executable, "_launcher.py"])
                 
     def main(self):
         running = True
@@ -674,20 +680,23 @@ class GameWindow():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
-                    self.reset_game()
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_m:
-                    self.toggle_minimap()
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and self.player_positions[self.current_maze_index] == self.end_positions[self.current_maze_index]:
-                    self.player_total_points += 1
-                    self.next_game()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.launch_launcher()
+                    elif event.key == pygame.K_r:
+                        self.reset_game()
+                    elif event.key == pygame.K_m:
+                        self.toggle_minimap()
+                    elif event.key == pygame.K_SPACE and self.player_positions[self.current_maze_index] == self.end_positions[self.current_maze_index]:
+                        self.player_total_points += 1
+                        self.next_game()
+                    else:
+                        event_key = event.key
+                        self.handle_key_movement(event_key)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         mouse_pos = event.pos
                         self.handle_click(mouse_pos)
-                elif event.type == pygame.KEYDOWN:
-                    event_key = event.key
-                    self.handle_key_movement(event_key)
 
             if self.gamestate:
                 time_elapsed += self.dt

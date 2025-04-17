@@ -1,8 +1,9 @@
-# Example file showing balls randomly falling from the top of the window
 import pygame
 import random
 import time
 import threading
+import subprocess
+import sys
 
 class GameWindow():
     def __init__(self):
@@ -126,6 +127,10 @@ class GameWindow():
         text_surface = self.font.render(text, True, color)
         self.screen.blit(text_surface, (x, y))
 
+    def launch_launcher(self):
+        pygame.quit()
+        subprocess.run([sys.executable, "_launcher.py"])
+
     # Main game loop
     def main(self):
         running = True
@@ -137,6 +142,8 @@ class GameWindow():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.launch_launcher()
                     if event.key == pygame.K_r:
                         print('Restarting...')
                         self.reset_game()

@@ -1,6 +1,8 @@
 import pygame
 import random
 import os
+import subprocess
+import sys
 
 class GameWindow():
     def __init__(self):
@@ -155,6 +157,10 @@ class GameWindow():
             x += scaled_width + padding
             max_height_in_row = max(max_height_in_row, scaled_height + 5)
 
+    def launch_launcher(self):
+        pygame.quit()
+        subprocess.run([sys.executable, "_launcher.py"])
+
     def main(self):
         running = True
         clock = pygame.time.Clock()
@@ -165,7 +171,9 @@ class GameWindow():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:
+                    if event.key == pygame.K_ESCAPE:
+                        self.launch_launcher()
+                    elif event.key == pygame.K_r:
                         self.reset_game()
                     elif event.key == pygame.K_h:
                         self.hitbox_toggle()

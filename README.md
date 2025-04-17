@@ -9,6 +9,7 @@ Welcome to the **Pygame Game Collection**! This project contains original games,
 ---
 
 ## 📖 Table of Contents
+- [Requirements](#️-requirements)
 - [Games Included (8)](#-games-included-8)
   - [1. Card Guessing Game](#1-card-guessing-game)
   - [2. Dodge Ball](#2-dodge-ball)
@@ -18,9 +19,16 @@ Welcome to the **Pygame Game Collection**! This project contains original games,
   - [6. Match the Meaning](#6-match-the-meaning)
   - [7. Duck Hunt](#7-duck-hunt)
   - [8. CEO Simulator](#8-ceo-simulator)
-- [Requirements](#️-requirements)
 - [How to Play](#-how-to-play)
+- [Controls Reference](#️-controls-reference)
 - [Developer Notes](#-developer-notes)
+
+---
+
+## 🛠️ Requirements
+
+- Python 3.8 or higher  
+- Pygame (install with `pip install pygame`)  
 
 ---
 
@@ -33,8 +41,6 @@ Guess the suit and rank of a hidden playing card. Score points for accurate gues
 - 🎯 Score system for both suit and rank  
 - 🧠 Simple, chance-based logic game  
 
----
-
 ### 2. **Dodge Ball**  
 Dodge falling balls that drop from the top of the screen. Move quickly and stay alert to survive!
 
@@ -42,16 +48,12 @@ Dodge falling balls that drop from the top of the screen. Move quickly and stay 
 - 🎮 Arcade-style controls  
 - 💥 Increasing difficulty over time  
 
----
-
 ### 3. **Drinking Game**  
 Match a growing sequence of beer images in the correct order. The pace quickens, testing both memory and reflexes.
 
 - 🍺 Match beer icons in sequence  
 - ⚡ Gameplay speeds up as you progress  
-- 🎩 Optional fish hat for added flair  
-
----
+- 🎩 Randomized fish hat for added flair  
 
 ### 4. **Duck Duck Goose**  
 A fast-paced reflex game—shoot birds in the correct sequence. One wrong hit, and it’s game over!
@@ -60,8 +62,6 @@ A fast-paced reflex game—shoot birds in the correct sequence. One wrong hit, a
 - 💥 Explosions and score animations  
 - 🎯 Difficulty ramps up with more speed and more birds  
 
----
-
 ### 5. **Maze v2**  
 A first-person maze game. Navigate rotating mazes, collect clues, and avoid traps.
 
@@ -69,17 +69,12 @@ A first-person maze game. Navigate rotating mazes, collect clues, and avoid trap
 - 🗺️ Room-to-room exploration  
 - 📜 Discover scattered notes with lore  
 
----
-
 ### 6. **Match the Meaning**  
 Test your vocabulary by matching words to their correct meanings. Choose from multiple options and get instant feedback—great for sharpening language skills.
 
 - 📚 Match a word to its correct meaning  
 - 🔢 Six randomized options per round  
-- ✅ Supports mouse and keyboard input  
 - 🧠 Fun and educational wordplay  
-
----
 
 ### 7. **Duck Hunt**  
 A Where’s Waldo-style game where players search for birds hiding in a large background. Each round gets tougher!
@@ -87,8 +82,6 @@ A Where’s Waldo-style game where players search for birds hiding in a large ba
 - 🦅 Locate birds randomly hidden in scenes  
 - 🖼️ Backgrounds change dynamically  
 - 🎯 Points increase as birds get harder to spot  
-
----
 
 ### 8. **CEO Simulator**  
 Choose your CEO persona and make impactful decisions. Balance money, morale, and reputation through randomized scenarios.
@@ -99,19 +92,28 @@ Choose your CEO persona and make impactful decisions. Balance money, morale, and
 
 ---
 
-## 🛠️ Requirements
-
-- Python 3.8 or higher  
-- Pygame (install with `pip install pygame`)  
-
----
-
 ## 🎮 How to Play
 
 1. Run `_launcher.py`.  
 2. Use arrow keys or mouse hover to select a game.  
 3. Click or press enter to start playing.  
 4. Follow the on-screen instructions in each game.
+
+---
+
+## ⌨️ Controls Reference
+
+| Game                | Keys / Controls                                       |
+|---------------------|-------------------------------------------------------|
+| * ALL GAMES         | `R` to restart, `ESC` to return to launcher           |
+| Card Guessing Game  | `WASD` or `Arrow keys` to select, `SPACE` to guess    |
+| Ball Mover          | `WASD` or `Arrow keys` to move, `Q/E` to switch modes |
+| Drinking Game       | Mouse click to match sequence                         |
+| Duck Duck Goose     | Mouse click to shoot, press `1-9` for difficulty      |
+| Maze v2             | Click or `Arrow keys` to navigate                     |
+| Match the Meaning   | Click or press `1-6` to choose a word                 |
+| Duck Hunt           | Mouse click on bird                                   |
+| CEO Simulator       | Click to select persona and responses                 |
 
 ---
 

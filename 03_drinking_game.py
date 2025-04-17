@@ -1,6 +1,8 @@
 import pygame
 import random
 import os
+import subprocess
+import sys
 
 class GameWindow():
     def __init__(self):
@@ -192,6 +194,10 @@ class GameWindow():
             self.player_total_points -= 1
             self.gamestate = False
 
+    def launch_launcher(self):
+        pygame.quit()
+        subprocess.run([sys.executable, "_launcher.py"])
+
     # Main game loop
     def main(self):
         running = True
@@ -203,6 +209,8 @@ class GameWindow():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.launch_launcher()                    
                     if event.key == pygame.K_r:
                         print('Restarting...')
                         self.reset_game()                        

@@ -2,6 +2,8 @@ import pygame
 import random
 import json
 import os
+import subprocess
+import sys
 
 class GameWindow:
     def __init__(self):
@@ -113,6 +115,10 @@ class GameWindow:
                         self.feedback = f"Wrong! {self.word}"
                     self.feedback_timer = pygame.time.get_ticks()
 
+    def launch_launcher(self):
+        pygame.quit()
+        subprocess.run([sys.executable, "_launcher.py"])
+
     def main(self):
         running = True
         clock = pygame.time.Clock()
@@ -123,6 +129,8 @@ class GameWindow:
                     running = False
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        self.launch_launcher()
+                    elif event.key == pygame.K_r:
                         self.feedback = f"The word was: {self.word}"
                         self.next_round()
                         self.feedback = ""
