@@ -50,9 +50,10 @@ class LauncherWindow():
         self.draw_background()
         self.game_rects.clear()
 
-        box_surface = pygame.Surface((460, 500), pygame.SRCALPHA)
-        box_surface.fill((255, 255, 255, 230))
-        self.screen.blit(box_surface, (0, 55))
+        # Box behind the words
+        # box_surface = pygame.Surface((460, 500), pygame.SRCALPHA)
+        # box_surface.fill((255, 255, 255, 230))
+        # self.screen.blit(box_surface, (0, 55))
 
         for i, game in enumerate(self.games):
             color = (76, 81, 247) if i == self.selected_index else self.GREY4
