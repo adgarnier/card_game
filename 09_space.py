@@ -18,7 +18,7 @@ YELLOW = (255, 255, 0)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 G = 6.67430e-11
-BASE_GRAVITY_MULTIPLIER = 100
+BASE_GRAVITY_MULTIPLIER = 80
 BASE_COLLISION_PENALTY = 10
 BASE_ORBIT_LIMIT = 1000
 
@@ -114,9 +114,9 @@ class Game:
         self.clock = pygame.time.Clock()
         self.reset()
         self.levels = [
-            Level(1, 3, 10), Level(2, 5, 10), Level(3, 7, 10),
-            Level(4, 8, 15), Level(5, 10, 15), Level(6, 12, 15),
-            Level(7, 14, 20), Level(8, 16, 20), Level(9, 18, 20),
+            Level(1, 1, 5), Level(2, 2, 5), Level(3, 3, 5),
+            Level(4, 5, 10), Level(5, 7, 10), Level(6, 9, 10),
+            Level(7, 12, 15), Level(8, 15, 15), Level(9, 18, 15),
             Level(10, 20, 30)
         ]
 
@@ -150,7 +150,7 @@ class Game:
         vy = math.cos(angle) * speed
         mass = random.uniform(1e5, 1e8)
         radius = random.randint(5, 8)
-        color = random.choice([BLUE, RED, PURPLE])
+        color = random.choice([RED, GREEN, GOLD, PURPLE])
         return CelestialBody(x, y, mass, radius, color, vx, vy)
 
     def spawn_collision_particles(self, x, y, color, count=15):
@@ -223,7 +223,7 @@ class Game:
         elapsed = int(now - self.game_start_time)
         level_elapsed = int(now - self.level_start_time)
         difficulty = self.current_level
-        gravity_multiplier = BASE_GRAVITY_MULTIPLIER + difficulty * 20
+        gravity_multiplier = BASE_GRAVITY_MULTIPLIER + difficulty * 10
         collision_penalty = BASE_COLLISION_PENALTY + difficulty * 10
 
         self.screen.fill(BLACK)
