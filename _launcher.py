@@ -35,9 +35,11 @@ class LauncherWindow():
              "bg": "images/screenshots/07.png", "ctrls": "Mouse click on bird"},
             {"title": "CEO Simulator", "file": "08_ceo_simulator.py", "desc": "All the responsibility, with all the hassle.",
              "bg": "images/screenshots/08.png", "ctrls": "Click to select persona and responses"},
-            {"title": "Space", "file": "09_space.py", "desc": "Another one.",
-             "bg": "images/screenshots/09.png", "ctrls": "Demo controls."},
-        ]
+            {"title": "S p a c e", "file": "09_space.py", "desc": "It's out of this world.",
+             "bg": "images/screenshots/09.png", "ctrls": "Click to add planets"},
+            {"title": "Color Match", "file": "10_color_match.py", "desc": "Distinguish between blue and other blue.",
+             "bg": "images/screenshots/10.png", "ctrls": "Click to pick color"},
+            ]
 
         self.selected_index = 0
         self.visible_start_index = 0

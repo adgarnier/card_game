@@ -110,7 +110,7 @@ class Particle:
 class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
-        pygame.display.set_caption("Space")
+        pygame.display.set_caption("S p a c e")
         self.clock = pygame.time.Clock()
         self.reset()
         self.levels = [

@@ -10,7 +10,7 @@ Welcome to the **Friend&Friend Game Collection**! This project contains original
 
 ## 📖 Table of Contents
 - [Requirements](#️-requirements)
-- [Games Included (8)](#-games-included-8)
+- [Games Included (10)](#-games-included-10)
   - [1. Card Guessing Game](#1-card-guessing-game)
   - [2. Dodge Ball](#2-dodge-ball)
   - [3. Drinking Game](#3-drinking-game)
@@ -19,6 +19,8 @@ Welcome to the **Friend&Friend Game Collection**! This project contains original
   - [6. Match the Meaning](#6-match-the-meaning)
   - [7. Duck Hunt](#7-duck-hunt)
   - [8. CEO Simulator](#8-ceo-simulator)
+  - [9. S p a c e](#9-s-p-a-c-e)
+  - [10. Color Match](#10-color-match)
 - [How to Play](#-how-to-play)
 - [Controls Reference](#️-controls-reference)
 - [Developer Notes](#-developer-notes)
@@ -32,7 +34,7 @@ Welcome to the **Friend&Friend Game Collection**! This project contains original
 
 ---
 
-## 📦 Games Included (8)
+## 📦 Games Included (10)
 
 ### 1. **Card Guessing Game**
 Guess the suit and rank of a hidden playing card. Score points for accurate guesses and test your memory and intuition.
@@ -90,6 +92,21 @@ Choose your CEO persona and make impactful decisions. Balance money, morale, and
 - 🔀 Randomly presented workplace dilemmas  
 - 📊 Choices influence your stats and outcomes  
 
+
+### 9. **S p a c e**
+Survive the gravitational chaos of a solar system in this physics-based game. Spawn planets with orbital precision, avoid collisions, and complete level-based challenges!
+
+- 🌌 Realistic orbital gravity simulation
+- 💥 Planet collisions with particle effects
+- 🎮 Level system with scaling difficulty and rogue planets
+
+### 10. **Color Match**
+Test your memory and color perception! Match the flashed color from a grid of subtly different shades. 
+
+- 🎨 Flash-based color recall
+- 🔢 Difficulty increases every round
+- 🧠 Addictively challenging!
+
 ---
 
 ## 🎮 How to Play
@@ -114,6 +131,8 @@ Choose your CEO persona and make impactful decisions. Balance money, morale, and
 | Match the Meaning   | Click or press `1-6` to choose a word                 |
 | Duck Hunt           | Mouse click on bird                                   |
 | CEO Simulator       | Click to select persona and responses                 |
+| S p a c e           | Click to spawn planets                                |
+| Color Match         | Click the matching color                              |
 
 ---
 
