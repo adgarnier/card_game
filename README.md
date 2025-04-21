@@ -132,7 +132,7 @@ Test your memory and color perception! Match the flashed color from a grid of su
 | Duck Hunt           | Mouse click on bird                                   |
 | CEO Simulator       | Click to select persona and responses                 |
 | S p a c e           | Click to spawn planets                                |
-| Color Match         | Click the matching color                              |
+| Color Correct       | Click the matching color                              |
 
 ---
 
