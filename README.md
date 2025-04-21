@@ -20,7 +20,7 @@ Welcome to the **Friend&Friend Game Collection**! This project contains original
   - [7. Duck Hunt](#7-duck-hunt)
   - [8. CEO Simulator](#8-ceo-simulator)
   - [9. S p a c e](#9-s-p-a-c-e)
-  - [10. Color Match](#10-color-match)
+  - [10. Color Correct](#10-color-correct)
 - [How to Play](#-how-to-play)
 - [Controls Reference](#️-controls-reference)
 - [Developer Notes](#-developer-notes)
@@ -100,7 +100,7 @@ Survive the gravitational chaos of a solar system in this physics-based game. Sp
 - 💥 Planet collisions with particle effects
 - 🎮 Level system with scaling difficulty and rogue planets
 
-### 10. **Color Match**
+### 10. **Color Correct**
 Test your memory and color perception! Match the flashed color from a grid of subtly different shades. 
 
 - 🎨 Flash-based color recall

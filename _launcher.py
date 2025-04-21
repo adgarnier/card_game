@@ -37,7 +37,7 @@ class LauncherWindow():
              "bg": "images/screenshots/08.png", "ctrls": "Click to select persona and responses"},
             {"title": "S p a c e", "file": "09_space.py", "desc": "It's out of this world.",
              "bg": "images/screenshots/09.png", "ctrls": "Click to add planets"},
-            {"title": "Color Match", "file": "10_color_match.py", "desc": "Distinguish between blue and other blue.",
+            {"title": "Color Correct", "file": "10_color_correct.py", "desc": "Distinguish between blue and other blue.",
              "bg": "images/screenshots/10.png", "ctrls": "Click to pick color"},
             ]
 
