@@ -2,7 +2,7 @@
 ![Pygame](https://img.shields.io/badge/Pygame-2.0-green)
 ![License](https://img.shields.io/badge/license-MIT-blue)
 
-# 🎮 Friend&Friend Game Collection
+# 🎮 Friend & Friends Game Collection
 
 Welcome to the **Friend&Friend Game Collection**! This project contains original games, each developed using Python and Pygame. Whether you're in the mood for strategy, arcade action, puzzles, or simulation—there’s something here for everyone.
 
