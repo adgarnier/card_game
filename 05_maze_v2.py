@@ -26,11 +26,26 @@ class GameWindow():
         self.maze_orientations = ["straight", "right", "backwards", "left"]
         self.current_maze_index = 0
         
+        self.stats_reset()
+
         self.images = self.load_images()
         self.minimap = False
         self.note = False
         self.falses()
         
+    def stats_reset(self):
+        # reset stats 
+        self.last_skeleton = -1
+        self.last_spider = -1
+        self.last_painting = -1
+        self.last_note = -1
+        self.last_grimreaper = -1
+        self.skeleton_count = 0
+        self.spider_count = 0
+        self.painting_count = 0
+        self.note_count = 0
+        self.grimreaper_count = 0
+
     def falses(self):
         # reset position
         self.start = False
@@ -46,6 +61,7 @@ class GameWindow():
         # self.note = False
         self.grimreaper = False
         self.spider = False
+        self.ladder = False
         
     def generate_orientations(self, x, y, width, height):
         return [
@@ -98,6 +114,9 @@ class GameWindow():
         spider_x, spider_y = self.random_position(self.width, self.height)
         self.spider_s = self.generate_orientations(spider_x, spider_y, self.width, self.height)
 
+        ladder_x, ladder_y = random.choice([0, self.width - 1]), 0
+        self.ladder_s = self.generate_orientations(ladder_x, ladder_y, self.width, self.height)
+
         # Initialize positions
         self.end_positions = list(self.end_s)
         self.skeleton_positions = list(self.skeleton_s)
@@ -105,6 +124,7 @@ class GameWindow():
         self.note_positions = list(self.note_s)
         self.grimreaper_positions = list(self.grimreaper_s)
         self.spider_positions = list(self.spider_s)
+        self.ladder_positions = list(self.ladder_s)
         self.player_positions = list(self.start_positions)
 
     def rotate_maze(self, maze):
@@ -205,6 +225,8 @@ class GameWindow():
         fade_surface = pygame.Surface(self.screen.get_size())
         if self.grimreaper == True:
             fade_surface.fill((80, 0, 0)) # Red overlay
+        elif self.ladder == True:
+            fade_surface.fill((255, 255, 255)) # White overlay
         else:
             fade_surface.fill((0, 0, 0))  # Black overlay
 
@@ -216,8 +238,14 @@ class GameWindow():
             pygame.time.delay(10)
 
     def reset_game(self):
+        print('resetting...')
         self.player_total_points = 0
         self.maze_size = 2
+        self.skeleton_count = 0
+        self.spider_count = 0
+        self.painting_count = 0
+        self.note_count = 0
+        self.stats_reset()
         self.note = False
         self.next_game()
         self.maze_setup()
@@ -247,7 +275,7 @@ class GameWindow():
         custom_sizes = {
             'new_start': (150, 80),
             'new_end': (150, 80),
-            'ladder': (300, 80),
+            'ladder': (300, 600),
             'skeleton_front': (500, 1000),
             'skeleton_back': (110, 300),
             'skeleton_side_1': (140, 390),
@@ -400,6 +428,12 @@ class GameWindow():
                     spider_position = (-150, -150)  # You can set this to any position you want
                     spider_key = "spider2"
                 self.screen.blit(self.images[spider_key], spider_position)
+
+        # ladder
+        if self.ladder:
+            ladder_key = "ladder"
+            ladder_position = (260, -30)
+            self.screen.blit(self.images[ladder_key], ladder_position)
     
     def toggle_minimap(self):
         self.minimap = not self.minimap
@@ -638,10 +672,10 @@ class GameWindow():
         if self.player_total_points != self.last_points:
             self.last_points = self.player_total_points
             note_notes = (
-                "don't lose the light", "the walls remember", "you shouldn't be here", "there's only one way out",
-                "i saw myself, but it wasn't me", "the notes write back", "they moved the exit again"
+                "don't lose the light", "the walls turn", "you shouldn't be here", "there's only one way out",
+                "i saw myself, but it wasn't me", "the notes write back", "they moved the exit again",
                 "hello?", "which maze am i in?", "it keeps expanding", "wrong turn. very wrong.",
-                "skeleton keeps you safe", "skeleton locks you in"
+                "skeleton keeps you safe", "be scared of the dark", " go down to go up"
             )
             current_note = random.choice(note_notes)
         else:
@@ -733,14 +767,23 @@ class GameWindow():
                 if self.player_positions[self.current_maze_index] == self.skeleton_positions[self.current_maze_index] \
                 and not self.start and not self.end:
                     self.skeleton = True
+                    if self.player_total_points != self.last_skeleton:
+                        self.last_skeleton = self.player_total_points
+                        self.skeleton_count += 1
 
                 if self.player_positions[self.current_maze_index] == self.painting_positions[self.current_maze_index] \
                 and not self.start and not self.end and not (self.left_wall and self.right_wall):
                     self.painting = True
+                    if self.player_total_points != self.last_painting:
+                        self.last_painting = self.player_total_points
+                        self.painting_count += 1
 
                 if self.player_positions[self.current_maze_index] == self.note_positions[self.current_maze_index] \
                 and self.current_maze_index == self.maze_for_note and not self.start and not self.end:
                     self.note = True
+                    if self.player_total_points != self.last_note:
+                        self.last_note = self.player_total_points
+                        self.note_count += 1
 
                 if self.player_positions[self.current_maze_index] == self.grimreaper_positions[self.current_maze_index]\
                 and not self.start and not self.end and not self.skeleton and not self.note and not self.painting \
@@ -749,8 +792,44 @@ class GameWindow():
                     self.fade_out()
                     self.gamestate = False
 
+                # grimreapers avoided
+                # if self.player_positions[self.current_maze_index] == self.grimreaper_positions[self.current_maze_index]\
+                # and not self.start and not self.end and (self.skeleton or self.note or self.painting) \
+                # and self.top_wall and self.right_wall and self.left_wall and self.player_total_points > 0:
+                #     self.grimreaper = True
+                #     self.fade_out()
+                #     self.gamestate = False
+                #     if self.player_total_points != self.last_grimreaper:
+                #         self.last_grimreaper = self.player_total_points
+                #         self.grimreaper_count += 1
+                #     print('saved from grimreaper')
+
+                # grimreapers avoided
+                if self.player_positions[self.current_maze_index] == self.grimreaper_positions[self.current_maze_index]\
+                    and (self.skeleton or self.spider or self.note or self.painting):
+                    if self.player_total_points != self.last_grimreaper:
+                        self.last_grimreaper = self.player_total_points
+                        self.grimreaper_count += 1
+                    print('avoided from grimreaper')
+
+                elif self.player_positions[self.current_maze_index] == self.grimreaper_positions[self.current_maze_index]:
+                    if self.player_total_points != self.last_grimreaper:
+                        self.last_grimreaper = self.player_total_points
+                        self.grimreaper_count += 1
+                    print(' grimreaper qwas her')
+
                 if self.player_positions[self.current_maze_index] == self.spider_positions[self.current_maze_index]:
                     self.spider = True
+                    if self.player_total_points != self.last_spider:
+                        self.last_spider = self.player_total_points
+                        self.spider_count += 1
+
+                if self.player_positions[self.current_maze_index] == self.ladder_positions[self.current_maze_index]\
+                and not self.skeleton and not self.note and not self.painting and not self.grimreaper and not self.spider\
+                and not self.end and self.player_total_points > 5 and self.player_total_points % 2 != 0:
+                    self.ladder = True
+                    self.fade_out()
+                    self.gamestate = False
 
                 self.draw_wall_images()
 
