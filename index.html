@@ -35,7 +35,7 @@
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Default for mobile */
         gap: 2rem;
-        padding: 4rem 2rem;
+        padding: 0rem 2rem;
         max-width: 1200px;
         margin: auto;
     }
@@ -66,7 +66,8 @@
       font-size: 0.65rem;
       color: #39ff14;
       margin: 0.4rem 0;
-      text-shadow: 0 0 3px #39ff14;
+      text-shadow: 0 0 2px #39ff14;
+      line-height: 1rem;
     }
 
     .game-link {
@@ -152,82 +153,354 @@
     .game-card:hover {
       animation: glow-fade 1s infinite;
     }
+    
+    .readme-controls button {
+      background: #ff00cc;
+      color: black;
+      padding: 0.5rem 1rem;
+      font-size: 0.6rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ff00cc;
+      z-index: 1000;
+    }
+
+    .readme-controls button:hover {
+      background: #39ff14;
+      color: black;
+      box-shadow: 0 0 20px #39ff14, 0 0 30px #ff00cc;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+    
+    
+    /* Modal content */
+    .modal-content {
+      background-color: #0a192f;
+      margin: 15% auto;
+      padding: 20px;
+      border: 3px dashed #64ffda;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 800px;
+      color: #64ffda;
+      font-family: 'Press Start 2P', cursive;
+      box-shadow: 0 0 20px #64ffda;
+      text-align: left;
+      overflow-y: auto;
+      max-height: 70%;
+    }
+    
+    /* Close button */
+    .close {
+      color: #64ffda;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+      color: #39ff14;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    
+    /* Modal body */
+    .modal-body img {
+      margin: 5px;
+    }
+    
+    .modal-body h1,
+    .modal-body h2,
+    .modal-body h3 {
+      color: #64ffda;
+    }
+    
+    .modal-body p,
+    .modal-body ul,
+    .modal-body ol,
+    .modal-body table {
+      color: #39ff14;
+      font-size: 0.75rem;
+      line-height: 1rem;
+    }
+    
+    .modal-body table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    
+    .modal-body th,
+    .modal-body td {
+      border: 1px solid #64ffda;
+      padding: 8px;
+      text-align: left;
+    }
+    
   </style>
 </head>
 <body>
 
 <header>🎮 Andy's Arcade Game Hub 🎮</header>
 
+<div class="readme-controls">
+    <button id="readmeButton">📘 README</button>
+</div>
+<div class="scroll-hint">Click README for full descriptions and controls </div>
+
 <div class="game-list">
     <div class="game-card" data-bg="images/screenshots/01.png">
       <p class="game-title">Card Guessing Game</p>
       <p class="game-desc">A game of chance, memory, and patience.</p>
       <p class="game-ctrls">WASD or Arrow keys to select | SPACE to guess</p>
-      <a class="game-link" href="01_card_guessing_game/">Play Now</a>
+      <a class="game-link" href="01_card_guessing_game/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/02.png">
       <p class="game-title">Dodge Ball</p>
       <p class="game-desc">Dodge the ball(s).</p>
       <p class="game-ctrls">WASD or Arrow keys to move | Q/E to switch modes</p>
-      <a class="game-link" href="02_dodge_ball/">Play Now</a>
+      <a class="game-link" href="02_dodge_ball/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/03.png">
       <p class="game-title">Drinking Game</p>
       <p class="game-desc">Cheers.</p>
       <p class="game-ctrls">Mouse click to match sequence</p>
-      <a class="game-link" href="03_drinking_game/">Play Now</a>
+      <a class="game-link" href="03_drinking_game/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/04.png">
       <p class="game-title">Duck Duck Goose</p>
       <p class="game-desc">Non-vegan first person shooter.</p>
       <p class="game-ctrls">Mouse click to shoot | Press 1-9 for difficulty</p>
-      <a class="game-link" href="04_duck_duck_goose/">Play Now</a>
+      <a class="game-link" href="04_duck_duck_goose/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/05.png">
       <p class="game-title">Maze v2</p>
       <p class="game-desc">The only way out is in.</p>
       <p class="game-ctrls">Click or Arrow keys to navigate</p>
-      <a class="game-link" href="05_maze_v2/">Play Now</a>
+      <a class="game-link" href="05_maze_v2/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/06.png">
       <p class="game-title">Match the Meaning</p>
       <p class="game-desc">Game (Noun): A form of play or sport.</p>
       <p class="game-ctrls">Click or press 1-6 to choose a word</p>
-      <a class="game-link" href="06_match_the_meaning/">Play Now</a>
+      <a class="game-link" href="06_match_the_meaning/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/07.png">
       <p class="game-title">Duck Hunt</p>
       <p class="game-desc">Find the duck-like object.</p>
       <p class="game-ctrls">Mouse click on bird</p>
-      <a class="game-link" href="07_duck_hunt/">Play Now</a>
+      <a class="game-link" href="07_duck_hunt/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/08.png">
       <p class="game-title">CEO Simulator</p>
       <p class="game-desc">All the responsibility, with all the hassle.</p>
       <p class="game-ctrls">Click to select persona and responses</p>
-      <a class="game-link" href="08_ceo_simulator/">Play Now</a>
+      <a class="game-link" href="08_ceo_simulator/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/09.png">
       <p class="game-title">S p a c e</p>
       <p class="game-desc">It's out of this world.</p>
       <p class="game-ctrls">Click to add planets</p>
-      <a class="game-link" href="09_space/">Play Now</a>
+      <a class="game-link" href="09_space/" target="_blank">Play Now</a>
     </div>
 
     <div class="game-card" data-bg="images/screenshots/10.png">
       <p class="game-title">Color Correct</p>
       <p class="game-desc">Distinguish between blue and other blue.</p>
       <p class="game-ctrls">Click to pick color</p>
-      <a class="game-link" href="10_color_correct/">Play Now</a>
+      <a class="game-link" href="10_color_correct/" target="_blank">Play Now</a>
     </div>
+</div>
+
+<div id="readmeModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <div class="modal-body">
+      <img src="https://img.shields.io/badge/Python-3.8+-blue" alt="Python">
+      <img src="https://img.shields.io/badge/Pygame-2.0-green" alt="Pygame">
+      <img src="https://img.shields.io/badge/license-MIT-blue" alt="License">
+      <p>Welcome to the <strong>Andy's Arcade Game Collection</strong>! This project contains original games, each developed using Python and Pygame. Whether you're in the mood for strategy, arcade action, puzzles, or simulation—there’s something here for everyone.</p>
+      <h2>📖 Table of Contents</h2>
+      <ul>
+        <li><a href="#games-included">Games Included (10)</a></li>
+        <ul>
+          <li><a href="#card-guessing-game">1. Card Guessing Game</a></li>
+          <li><a href="#dodge-ball">2. Dodge Ball</a></li>
+          <li><a href="#drinking-game">3. Drinking Game</a></li>
+          <li><a href="#duck-duck-goose">4. Duck Duck Goose</a></li>
+          <li><a href="#maze-v2">5. Maze v2</a></li>
+          <li><a href="#match-the-meaning">6. Match the Meaning</a></li>
+          <li><a href="#duck-hunt">7. Duck Hunt</a></li>
+          <li><a href="#ceo-simulator">8. CEO Simulator</a></li>
+          <li><a href="#space">9. S p a c e</a></li>
+          <li><a href="#color-correct">10. Color Correct</a></li>
+        </ul>
+        <li><a href="#how-to-play">How to Play</a></li>
+        <li><a href="#controls-reference">Controls Reference</a></li>
+      </ul>
+
+      <h2 id="games-included">📦 Games Included (10)</h2>
+      <h3 id="card-guessing-game">1. Card Guessing Game</h3>
+      <p>Guess the suit and rank of a hidden playing card. Score points for accurate guesses and test your memory and intuition.</p>
+      <ul>
+        <li>🃏 Randomized card every round</li>
+        <li>🎯 Score system for both suit and rank</li>
+        <li>🧠 Simple, chance-based logic game</li>
+      </ul>
+
+      <h3 id="dodge-ball">2. Dodge Ball</h3>
+      <p>Dodge falling balls that drop from the top of the screen. Move quickly and stay alert to survive!</p>
+      <ul>
+        <li>🏃‍♂️ Randomized falling patterns</li>
+        <li>🎮 Arcade-style controls</li>
+        <li>💥 Increasing difficulty over time</li>
+      </ul>
+
+      <h3 id="drinking-game">3. Drinking Game</h3>
+      <p>Match a growing sequence of beer images in the correct order. The pace quickens, testing both memory and reflexes.</p>
+      <ul>
+        <li>🍺 Match beer icons in sequence</li>
+        <li>⚡ Gameplay speeds up as you progress</li>
+        <li>🎩 Randomized fish hat for added flair</li>
+      </ul>
+
+      <h3 id="duck-duck-goose">4. Duck Duck Goose</h3>
+      <p>A fast-paced reflex game—shoot birds in the correct sequence. One wrong hit, and it’s game over!</p>
+      <ul>
+        <li>🦢 Match target sequence with quick shooting</li>
+        <li>💥 Explosions and score animations</li>
+        <li>🎯 Difficulty ramps up with more speed and more birds</li>
+      </ul>
+
+      <h3 id="maze-v2">5. Maze v2</h3>
+      <p>A first-person maze game. Navigate rotating mazes, collect clues, and avoid traps.</p>
+      <ul>
+        <li>🧭 Procedurally generated maze rotations</li>
+        <li>🗺️ Room-to-room exploration</li>
+        <li>📜 Discover scattered notes with lore</li>
+      </ul>
+
+      <h3 id="match-the-meaning">6. Match the Meaning</h3>
+      <p>Test your vocabulary by matching words to their correct meanings. Choose from multiple options and get instant feedback—great for sharpening language skills.</p>
+      <ul>
+        <li>📚 Match a word to its correct meaning</li>
+        <li>🔢 Six randomized options per round</li>
+        <li>🧠 Fun and educational wordplay</li>
+      </ul>
+
+      <h3 id="duck-hunt">7. Duck Hunt</h3>
+      <p>A Where’s Waldo-style game where players search for birds hiding in a large background. Each round gets tougher!</p>
+      <ul>
+        <li>🦅 Locate birds randomly hidden in scenes</li>
+        <li>🖼️ Backgrounds change dynamically</li>
+        <li>🎯 Points increase as birds get harder to spot</li>
+      </ul>
+
+      <h3 id="ceo-simulator">8. CEO Simulator</h3>
+      <p>Choose your CEO persona and make impactful decisions. Balance money, morale, and reputation through randomized scenarios.</p>
+      <ul>
+        <li>🧑‍💼 4 CEO types: Capitalist, Narcissist, Socialist, Idealist</li>
+        <li>🔀 Randomly presented workplace dilemmas</li>
+        <li>📊 Choices influence your stats and outcomes</li>
+      </ul>
+
+      <h3 id="space">9. S p a c e</h3>
+      <p>Survive the gravitational chaos of a solar system in this physics-based game. Spawn planets with orbital precision, avoid collisions, and complete level-based challenges!</p>
+      <ul>
+        <li>🌌 Realistic orbital gravity simulation</li>
+        <li>💥 Planet collisions with particle effects</li>
+        <li>🎮 Level system with scaling difficulty and rogue planets</li>
+      </ul>
+
+      <h3 id="color-correct">10. Color Correct</h3>
+      <p>Test your memory and color perception! Match the flashed color from a grid of subtly different shades.</p>
+      <ul>
+        <li>🎨 Flash-based color recall</li>
+        <li>🔢 Difficulty increases every round</li>
+        <li>🧠 Addictively challenging!</li>
+      </ul>
+
+      <h2 id="how-to-play">🎮 How to Play</h2>
+      <ol>
+        <li>Select a game.</li>
+        <li>Read the on-screen instructions for each game (also below).</li>
+        <li>Click to start playing!</li>
+      </ol>
+
+      <h2 id="controls-reference">⌨️ Controls Reference</h2>
+      <table>
+        <tr>
+          <th>Game</th>
+          <th>Keys / Controls</th>
+        </tr>
+        <tr>
+          <td>ALL GAMES</td>
+          <td>`R` to restart</td>
+        </tr>
+        <tr>
+          <td>Card Guessing Game</td>
+          <td>`WASD` or `Arrow keys` to select, `SPACE` to guess</td>
+        </tr>
+        <tr>
+          <td>Dodge Ball</td>
+          <td>`WASD` or `Arrow keys` to move, `Q/E` to switch modes</td>
+        </tr>
+        <tr>
+          <td>Drinking Game</td>
+          <td>Mouse click to match sequence</td>
+        </tr>
+        <tr>
+          <td>Duck Duck Goose</td>
+          <td>Mouse click to shoot, press `1-9` for difficulty</td>
+        </tr>
+        <tr>
+          <td>Maze v2</td>
+          <td>Click or `Arrow keys` to navigate</td>
+        </tr>
+        <tr>
+          <td>Match the Meaning</td>
+          <td>Click or press `1-6` to choose a word</td>
+        </tr>
+        <tr>
+          <td>Duck Hunt</td>
+          <td>Mouse click on bird</td>
+        </tr>
+        <tr>
+          <td>CEO Simulator</td>
+          <td>Click to select persona and responses</td>
+        </tr>
+        <tr>
+          <td>S p a c e</td>
+          <td>Click to spawn planets</td>
+        </tr>
+        <tr>
+          <td>Color Correct</td>
+          <td>Click the matching color</td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </div>
 
 <div class="scroll-hint">Hover over a game to change the background</div>
@@ -248,6 +521,34 @@
       document.body.style.backgroundImage = `url(${defaultBg})`;
     });
   });
+</script>
+
+<script>
+  // Get the modal
+  var modal = document.getElementById("readmeModal");
+
+  // Get the button that opens the modal
+  var btn = document.getElementById("readmeButton");
+
+  // Get the <span> element that closes the modal
+  var span = document.getElementsByClassName("close")[0];
+
+  // When the user clicks the button, open the modal
+  btn.onclick = function() {
+    modal.style.display = "block";
+  }
+
+  // When the user clicks on <span> (x), close the modal
+  span.onclick = function() {
+    modal.style.display = "none";
+  }
+
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
 </script>
 
 </body>
