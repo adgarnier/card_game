@@ -224,6 +224,41 @@
     </div>
 </div>
 
+<button id="toggleReadme" style="
+  background: #ff00cc;
+  color: black;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid #39ff14;
+  border-radius: 5px;
+  cursor: pointer;
+  position: fixed;
+  bottom: 6rem;
+  left: 2rem;
+  z-index: 1000;
+  box-shadow: 0 0 10px #ff00cc;
+">📄 VIEW README</button>
+
+<div id="readmePanel" style="
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.95);
+  color: #39ff14;
+  padding: 1rem;
+  font-family: monospace;
+  white-space: pre-wrap;
+  font-size: 0.7rem;
+  border-top: 4px double #ff00cc;
+  box-shadow: 0 -4px 20px rgba(255, 0, 204, 0.4);
+  z-index: 999;
+"></div>
+
 <div class="scroll-hint">Hover over a game to change the background</div>
 <a id="backToTop" href="#">↑ TOP</a>
 
@@ -241,6 +276,33 @@
     card.addEventListener('mouseleave', () => {
       document.body.style.backgroundImage = `url(${defaultBg})`;
     });
+  });
+</script>
+
+<script>
+  const toggleBtn = document.getElementById('toggleReadme');
+  const readmePanel = document.getElementById('readmePanel');
+  let readmeLoaded = false;
+
+  toggleBtn.addEventListener('click', () => {
+    if (readmePanel.style.display === 'none') {
+      readmePanel.style.display = 'block';
+      toggleBtn.textContent = '📄 HIDE README';
+      if (!readmeLoaded) {
+        fetch('https://raw.githubusercontent.com/adgarnier/games/main/README.md') // change this
+          .then(res => res.text())
+          .then(text => {
+            readmePanel.textContent = text;
+            readmeLoaded = true;
+          })
+          .catch(err => {
+            readmePanel.textContent = 'Failed to load README.md 😢';
+          });
+      }
+    } else {
+      readmePanel.style.display = 'none';
+      toggleBtn.textContent = '📄 VIEW README';
+    }
   });
 </script>
 
