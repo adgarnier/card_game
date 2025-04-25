@@ -32,12 +32,12 @@
     }
 
     .game-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-      gap: 2rem;
-      padding: 4rem 2rem;
-      max-width: 1200px;
-      margin: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Default for mobile */
+        gap: 2rem;
+        padding: 4rem 2rem;
+        max-width: 1200px;
+        margin: auto;
     }
 
     .game-card {
@@ -141,6 +141,12 @@
       0% { box-shadow: 0 0 5px #00ffff; }
       50% { box-shadow: 0 0 20px #00ffff; }
       100% { box-shadow: 0 0 5px #00ffff; }
+    }
+
+    @media (min-width: 768px) {
+        .game-list {
+            grid-template-columns: repeat(2, 1fr); /* Two columns for desktop */
+        }
     }
 
     .game-card:hover {
