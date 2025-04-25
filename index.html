@@ -95,7 +95,26 @@
       text-align: center;
       color: rgba(255, 255, 255, 0.5);
       font-size: 0.65rem;
+      margin-top: 2rem;
       margin-bottom: 3rem;
+    }
+    
+    .scroll-hint button {
+      background: #ff00cc;
+      color: black;
+      padding: 0.5rem 1rem;
+      font-size: 0.65rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ff00cc;
+      z-index: 1000;
+    }
+
+    .scroll-hint button:hover {
+      background: #39ff14;
+      color: black;
+      box-shadow: 0 0 20px #39ff14, 0 0 30px #ff00cc;
     }
 
     #backToTop {
@@ -152,24 +171,6 @@
 
     .game-card:hover {
       animation: glow-fade 1s infinite;
-    }
-    
-    .readme-controls button {
-      background: #ff00cc;
-      color: black;
-      padding: 0.5rem 1rem;
-      font-size: 0.6rem;
-      border-radius: 5px;
-      text-decoration: none;
-      font-weight: bold;
-      box-shadow: 0 0 12px #ff00cc;
-      z-index: 1000;
-    }
-
-    .readme-controls button:hover {
-      background: #39ff14;
-      color: black;
-      box-shadow: 0 0 20px #39ff14, 0 0 30px #ff00cc;
     }
     
     .modal {
@@ -256,10 +257,7 @@
 
 <header>🎮 Andy's Arcade Game Hub 🎮</header>
 
-<div class="readme-controls">
-    <button id="readmeButton">📘 README</button>
-</div>
-<div class="scroll-hint">Click README for full descriptions and controls </div>
+<div class="scroll-hint">Click <button id="readmeButton">HERE</button> for full descriptions and controls </div>
 
 <div class="game-list">
     <div class="game-card" data-bg="images/screenshots/01.png">
@@ -505,8 +503,7 @@
 
 <div class="scroll-hint">Hover over a game to change the background</div>
 <a id="backToTop" href="#">↑ TOP</a>
-
-<a href="https://adgarnier.github.io/" id="backHome" style="">← BACK</a>
+<a href="https://adgarnier.github.io/" id="backHome">← BACK</a>
 
 <script>
   const gameCards = document.querySelectorAll('.game-card');
@@ -533,20 +530,30 @@
   // Get the <span> element that closes the modal
   var span = document.getElementsByClassName("close")[0];
 
-  // When the user clicks the button, open the modal
+  // Get the BACK and TOP buttons
+  var backToTop = document.getElementById("backToTop");
+  var backHome = document.getElementById("backHome");
+
+  // When the user clicks the button, open the modal and hide BACK and TOP buttons
   btn.onclick = function() {
     modal.style.display = "block";
+    backToTop.style.display = "none";
+    backHome.style.display = "none";
   }
 
-  // When the user clicks on <span> (x), close the modal
+  // When the user clicks on <span> (x), close the modal and show BACK and TOP buttons
   span.onclick = function() {
     modal.style.display = "none";
+    backToTop.style.display = "block";
+    backHome.style.display = "block";
   }
 
-  // When the user clicks anywhere outside of the modal, close it
+  // When the user clicks anywhere outside of the modal, close it and show BACK and TOP buttons
   window.onclick = function(event) {
     if (event.target == modal) {
       modal.style.display = "none";
+      backToTop.style.display = "block";
+      backHome.style.display = "block";
     }
   }
 </script>
