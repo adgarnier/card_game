@@ -111,10 +111,10 @@ Test your memory and color perception! Match the flashed color from a grid of su
 
 ## 🎮 How to Play
 
-1. Run `_launcher.py`.  
-2. Use arrow keys or mouse hover to select a game.
+1. Go to https://adgarnier.github.io/games or run `_launcher.py`.  
+2. Mouse hover to select a game.
 3. Read the on-screen instructions for each game (also below).
-4. Click or press enter to start playing. 
+4. Click to start playing. 
 
 ---
 
