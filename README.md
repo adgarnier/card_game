@@ -126,7 +126,7 @@ Test your memory and color perception! Match the flashed color from a grid of su
 |---------------------|-------------------------------------------------------|
 | * ALL GAMES         | `R` to restart, `ESC` to return to launcher           |
 | Card Guessing Game  | `WASD` or `Arrow keys` to select, `SPACE` to guess    |
-| Ball Mover          | `WASD` or `Arrow keys` to move, `Q/E` to switch modes |
+| Dodge Ball          | `WASD` or `Arrow keys` to move, `Q/E` to switch modes |
 | Drinking Game       | Mouse click to match sequence                         |
 | Duck Duck Goose     | Mouse click to shoot, press `1-9` for difficulty      |
 | Maze v2             | Click or `Arrow keys` to navigate                     |
