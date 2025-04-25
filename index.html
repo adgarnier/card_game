@@ -2,100 +2,157 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>My Game Hub</title>
+  <title>Andy Garnier | Arcade Game Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An arcade-style hub of Pygame games created by Andy Garnier.">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: url('images/screenshots/01.png') no-repeat center center fixed;
+      font-family: 'Press Start 2P', cursive;
+      background: #000 url('images/screenshots/01.png') no-repeat center center fixed;
       background-size: cover;
-      color: #f0f0f0;
+      color: #0a192f;
       margin: 0;
       padding: 0;
-      text-align: center;
     }
-  
+
     header {
-      padding: 2rem 0;
-      font-size: 2.5rem;
-      font-weight: bold;
-      background: rgba(15, 15, 15, 0.7); /* Darker background */
-      backdrop-filter: blur(6px);
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
-      color: #90caf9;
+      text-align: center;
+      padding: 3rem 1rem;
+      font-size: 1.5rem;
+      color: #64ffda;
+      background: black;
+      text-shadow: 0 0 8px #64ffda, 0 0 16px #64ffda;
+      border-bottom: 4px double #ff00cc;
+      letter-spacing: 2px;
     }
-  
+
     .game-list {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 2rem;
-      padding: 3rem;
+      padding: 4rem 2rem;
       max-width: 1200px;
       margin: auto;
     }
-  
+
     .game-card {
-      background: rgba(20, 20, 20, 0.65); /* Darker background */
-      backdrop-filter: blur(8px);
-      border: 2px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0, 0, 0, 0.8);
+      border: 3px dashed #64ffda;
       border-radius: 20px;
       padding: 1.5rem;
       text-align: left;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s, box-shadow 0.3s;
+      box-shadow: 0 0 10px #64ffda;
     }
-  
+
     .game-card:hover {
-      transform: translateY(-5px);
-      border-color: #42a5f5;
-      box-shadow: 0 0 25px rgba(66, 165, 245, 0.8); /* Glow effect */
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #64ffda, 0 0 40px #64ffda;
     }
-  
+
     .game-title {
-      font-size: 1.4rem;
-      color: #90caf9;
-      margin-bottom: 0.5rem;
-    }
-  
-    .game-desc {
       font-size: 1rem;
-      color: #ccc;
-      margin-bottom: 0.8rem;
+      color: #64ffda;
+      margin-bottom: 0.6rem;
+      text-shadow: 0 0 4px #64ffda;
     }
-  
-    .game-ctrls {
-      font-size: 0.9rem;
-      color: #b0bec5;
+
+    .game-desc, .game-ctrls {
+      font-size: 0.65rem;
+      color: #39ff14;
+      margin: 0.4rem 0;
+      text-shadow: 0 0 3px #39ff14;
     }
-  
+
     .game-link {
       display: inline-block;
       margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      background: #42a5f5;
-      color: white;
+      padding: 0.6rem 1rem;
+      background: #64ffda;
+      color: black;
       text-decoration: none;
-      border-radius: 10px;
-      font-weight: bold;
-      transition: background 0.3s, box-shadow 0.3s;
+      border: 2px solid #64ffda;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #64ffda;
     }
-  
+
     .game-link:hover {
-      background: #64b5f6;
-      box-shadow: 0 0 10px rgba(100, 181, 246, 0.8); /* Button glow */
+      background: #39ff14;
+      color: black;
+      box-shadow: 0 0 20px #39ff14, 0 0 30px #ff00cc;
+      border-color: #39ff14;
     }
-  
+
     .scroll-hint {
-      font-size: 0.9rem;
-      margin-top: 2rem;
-      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.65rem;
+      margin-bottom: 3rem;
+    }
+
+    #backToTop {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: #ff00cc;
+      color: black;
+      padding: 0.5rem 1rem;
+      font-size: 0.6rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ff00cc;
+      z-index: 1000;
+    }
+    #backToTop:hover {
+      background: #39ff14;
+      color: black;
+      box-shadow: 0 0 20px #39ff14, 0 0 30px #ff00cc;
+    }
+    
+    #backHome {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      background: #ff00cc;
+      color: black;
+      padding: 0.5rem 1rem;
+      font-size: 0.6rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      box-shadow: 0 0 12px #ff00cc;
+      z-index: 1000;
+    }
+    #backHome:hover {
+      background: #39ff14;
+      color: black;
+      box-shadow: 0 0 20px #39ff14, 0 0 30px #ff00cc;
+    }
+
+    @keyframes glow-fade {
+      0% { box-shadow: 0 0 5px #00ffff; }
+      50% { box-shadow: 0 0 20px #00ffff; }
+      100% { box-shadow: 0 0 5px #00ffff; }
+    }
+
+    .game-card:hover {
+      animation: glow-fade 1s infinite;
     }
   </style>
-  </head>
+</head>
 <body>
 
-  <header>Welcome to My Game Hub</header>
+<header>🎮 Andy's Arcade Game Hub 🎮</header>
 
-  <div class="game-list">
+<div class="game-list">
     <div class="game-card" data-bg="images/screenshots/01.png">
       <p class="game-title">Card Guessing Game</p>
       <p class="game-desc">A game of chance, memory, and patience.</p>
@@ -165,26 +222,27 @@
       <p class="game-ctrls">Click to pick color</p>
       <a class="game-link" href="10_color_correct/">Play Now</a>
     </div>
-  </div>
+</div>
 
-  <div class="scroll-hint">Hover over a game to preview its background</div>
+<div class="scroll-hint">Hover over a game to change the background</div>
+<a id="backToTop" href="#">↑ TOP</a>
 
-  <script>
-    const gameCards = document.querySelectorAll('.game-card');
-    const defaultBg = 'images/screenshots/01.png';
+<a href="index.html" id="backHome" style="">← BACK</a>
 
-    gameCards.forEach(card => {
-      const bg = card.dataset.bg;
+<script>
+  const gameCards = document.querySelectorAll('.game-card');
+  const defaultBg = 'images/screenshots/01.png';
 
-      card.addEventListener('mouseenter', () => {
-        document.body.style.backgroundImage = `url(${bg})`;
-      });
-
-      card.addEventListener('mouseleave', () => {
-        document.body.style.backgroundImage = `url(${defaultBg})`;
-      });
+  gameCards.forEach(card => {
+    const bg = card.dataset.bg;
+    card.addEventListener('mouseenter', () => {
+      document.body.style.backgroundImage = `url(${bg})`;
     });
-  </script>
+    card.addEventListener('mouseleave', () => {
+      document.body.style.backgroundImage = `url(${defaultBg})`;
+    });
+  });
+</script>
 
 </body>
 </html>
